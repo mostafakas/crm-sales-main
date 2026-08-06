@@ -1,21 +1,23 @@
 "use client";
 
 import * as React from "react";
-import { Plus, Download, Filter, RefreshCw, Search, TableProperties } from "lucide-react";
+import { Plus, RefreshCw, Search } from "lucide-react";
 import { Typography } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getClients } from "@/lib/firebase/clients";
+import { getClients, deleteClient } from "@/lib/firebase/clients";
 import type { Client } from "@/lib/types/client";
 import { ClientDataTable } from "./client-data-table";
 import { ClientFormModal } from "./client-form-modal";
-import { columns } from "./columns";
+import { getColumns } from "./columns";
+import { toast } from "sonner";
 
 export function ClientsView() {
   const [clients, setClients] = React.useState<Client[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [search, setSearch] = React.useState("");
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [editingClient, setEditingClient] = React.useState<Client | null>(null);
 
   const fetchClients = React.useCallback(async () => {
     try {
@@ -42,10 +44,30 @@ export function ClientsView() {
         c.contactName.toLowerCase().includes(lowerSearch) ||
         c.email.toLowerCase().includes(lowerSearch)
     );
-  }, [clients, search]);
+  }, [search, clients]);
+
+  const handleEdit = (client: Client) => {
+    setEditingClient(client);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (client: Client) => {
+    if (confirm(`Are you sure you want to delete ${client.companyName}?`)) {
+      try {
+        await deleteClient(client.id);
+        toast.success("Client deleted successfully!");
+        fetchClients();
+      } catch (error) {
+        console.error("Failed to delete client:", error);
+        toast.error("Failed to delete client.");
+      }
+    }
+  };
+
+  const tableColumns = React.useMemo(() => getColumns(handleEdit, handleDelete), [handleEdit, handleDelete]);
 
   return (
-    <div className="flex flex-col h-full bg-muted/20">
+    <div className="flex flex-col h-full bg-muted/20 w-full">
       {/* Header */}
       <div className="p-6 pb-4 flex items-center justify-between border-b border-border bg-background">
         <div className="flex flex-col gap-1">
@@ -90,7 +112,7 @@ export function ClientsView() {
       <div className="flex-1 p-6 overflow-hidden flex flex-col">
         <div className="flex-1 bg-background rounded-[16px] border border-border overflow-hidden shadow-sm flex flex-col">
           <ClientDataTable
-            columns={columns}
+            columns={tableColumns}
             data={filteredClients}
             isLoading={isLoading}
           />
@@ -99,9 +121,14 @@ export function ClientsView() {
 
       <ClientFormModal
         open={isModalOpen}
-        onOpenChange={setIsModalOpen}
+        onOpenChange={(open) => {
+          setIsModalOpen(open);
+          if (!open) setEditingClient(null);
+        }}
+        initialData={editingClient}
         onSuccess={() => {
           setIsModalOpen(false);
+          setEditingClient(null);
           fetchClients();
         }}
       />

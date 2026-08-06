@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function ClientsPage() {
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)]">
+    <div className="flex flex-col h-[calc(100vh-4rem)] w-full">
       <ClientsView />
     </div>
   );

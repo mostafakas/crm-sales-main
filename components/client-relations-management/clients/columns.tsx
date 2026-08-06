@@ -16,7 +16,10 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { deleteClient } from "@/lib/firebase/clients";
 
-export const columns: ColumnDef<Client>[] = [
+export const getColumns = (
+  onEdit: (client: Client) => void,
+  onDelete: (client: Client) => void
+): ColumnDef<Client>[] => [
   {
     accessorKey: "companyName",
     header: ({ column }) => {
@@ -118,16 +121,16 @@ export const columns: ColumnDef<Client>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-xs font-medium cursor-pointer">View details</DropdownMenuItem>
-            <DropdownMenuItem className="text-xs font-medium cursor-pointer">Edit client</DropdownMenuItem>
+            <DropdownMenuItem 
+              className="text-xs font-medium cursor-pointer"
+              onClick={() => onEdit(client)}
+            >
+              Edit client
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem 
               className="text-xs font-bold text-destructive cursor-pointer hover:bg-destructive/10 hover:text-destructive"
-              onClick={async () => {
-                if (confirm(`Are you sure you want to delete ${client.companyName}?`)) {
-                  await deleteClient(client.id);
-                  window.location.reload();
-                }
-              }}
+              onClick={() => onDelete(client)}
             >
               Delete client
             </DropdownMenuItem>

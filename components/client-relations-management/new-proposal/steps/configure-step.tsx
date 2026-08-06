@@ -42,7 +42,9 @@ import { WizardStepHeader } from "../wizard-step-header";
 import { SelectionCard, WizardFieldSection } from "../selection-card";
 import { CoverPage } from "@/components/client-relations-management/proposal-document/pages";
 import { ScaledPage } from "@/components/client-relations-management/proposal-document/scaled-page";
-import { AddClientModal } from "../add-client-modal";
+import { ClientFormModal } from "@/components/client-relations-management/clients/client-form-modal";
+import { getClients } from "@/lib/firebase/clients";
+import type { Client } from "@/lib/types/client";
 
 interface ServiceOption {
   key: ProposalService;
@@ -141,9 +143,27 @@ export function ConfigureStep() {
   const { draft, updateDraft, setArOverride } = useProposalDraft();
   const [clientSearch, setClientSearch] = React.useState("");
   const [addClientOpen, setAddClientOpen] = React.useState(false);
-  const [extraClients, setExtraClients] = React.useState<ProposalDraftClient[]>(
-    [],
-  );
+  const [firebaseClients, setFirebaseClients] = React.useState<Client[]>([]);
+
+  const fetchClients = React.useCallback(async () => {
+    try {
+      const data = await getClients();
+      setFirebaseClients(data);
+    } catch (error) {
+      console.error("Failed to fetch clients:", error);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchClients();
+  }, [fetchClients]);
+
+  const mapClientToDraft = (c: Client): ProposalDraftClient => ({
+    id: c.id,
+    name: c.companyName,
+    email: c.email,
+    avatar: "https://ui.shadcn.com/avatars/01.png",
+  });
 
   const expiresAtLabel = React.useMemo(() => {
     if (!draft.validityDays) return "Pick a duration";
@@ -156,7 +176,7 @@ export function ConfigureStep() {
     "MMMM dd, yyyy",
   )} · ${draft.validityDays || 14} Days`;
 
-  const allClients = [...extraClients, ...SAMPLE_CLIENTS];
+  const allClients = firebaseClients.map(mapClientToDraft);
   const filteredClients = clientSearch
     ? allClients.filter((c) =>
         `${c.name} ${c.email}`
@@ -536,13 +556,12 @@ export function ConfigureStep() {
           </button>
         </div>
 
-        <AddClientModal
+        <ClientFormModal
           open={addClientOpen}
           onOpenChange={setAddClientOpen}
-          onCreate={(client) => {
-            setExtraClients((prev) => [client, ...prev]);
-            updateDraft({ client });
+          onSuccess={() => {
             setAddClientOpen(false);
+            fetchClients(); // Refresh list to get the newly added client
           }}
         />
       </div>

@@ -11,6 +11,7 @@ import {
 } from "@/lib/store/slices/proposals-slice";
 import { exportProposalAsDocx } from "@/lib/proposal-export";
 import type { StoredProposal } from "@/lib/types/proposal";
+import { saveFirebaseProposal, deleteFirebaseProposal } from "@/lib/firebase/proposals";
 
 /**
  * Shared view/edit/archive/export wiring for the proposal lists (home +
@@ -42,9 +43,14 @@ export function useProposalActions() {
   );
 
   const handleArchive = React.useCallback(
-    (p: StoredProposal) => {
-      dispatch(removeProposal(p.id));
-      setViewing(null);
+    async (p: StoredProposal) => {
+      try {
+        await deleteFirebaseProposal(p.id);
+        dispatch(removeProposal(p.id));
+        setViewing(null);
+      } catch (err) {
+        console.error("Failed to delete proposal:", err);
+      }
     },
     [dispatch],
   );
@@ -68,8 +74,13 @@ export function useProposalActions() {
 
   /** Persist a newly imported proposal. */
   const handleImport = React.useCallback(
-    (p: StoredProposal) => {
-      dispatch(upsertProposal(p));
+    async (p: StoredProposal) => {
+      try {
+        await saveFirebaseProposal(p);
+        dispatch(upsertProposal(p));
+      } catch (err) {
+        console.error("Failed to import proposal:", err);
+      }
     },
     [dispatch],
   );

@@ -8,9 +8,9 @@ import { baseApi } from "./services/baseApi";
 import { createEmptyProposalDraft } from "@/lib/data/proposal-draft-seed";
 import type { ProposalDraft } from "@/lib/types/proposal-draft";
 import type { StoredProposal } from "@/lib/types/proposal";
+import { getProposals } from "@/lib/firebase/proposals";
 
 const STORAGE_KEY = "almaster:crm:proposal-draft";
-const PROPOSALS_STORAGE_KEY = "almaster:crm:proposals";
 
 export const store = configureStore({
   reducer: {
@@ -64,16 +64,6 @@ function loadPersistedDraft(): ProposalDraft | null {
   }
 }
 
-function loadPersistedProposals(): StoredProposal[] {
-  try {
-    const raw = window.localStorage.getItem(PROPOSALS_STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as StoredProposal[]) : [];
-  } catch {
-    return [];
-  }
-}
 
 /**
  * Lazily hydrate the proposal draft and saved proposals from localStorage
@@ -89,11 +79,17 @@ export function hydrateClientOnly() {
   const persistedDraft = loadPersistedDraft();
   if (persistedDraft) store.dispatch(setDraft(persistedDraft));
 
-  /* Always dispatch — even an empty list flips the `hydrated` flag so views
-   * can tell "loaded, no proposals" from "not loaded yet". */
-  store.dispatch(setProposals(loadPersistedProposals()));
+  /* Fetch proposals from Firebase */
+  getProposals()
+    .then((data) => {
+      store.dispatch(setProposals(data));
+    })
+    .catch((err) => {
+      console.error("Failed to fetch proposals", err);
+      store.dispatch(setProposals([]));
+    });
 
-  /* Persist draft + records on every change, debounced via micro-task. */
+  /* Persist draft on every change, debounced via micro-task. */
   let queued = false;
   store.subscribe(() => {
     if (queued) return;
@@ -105,10 +101,6 @@ export function hydrateClientOnly() {
         window.localStorage.setItem(
           STORAGE_KEY,
           JSON.stringify(state.proposals.draft),
-        );
-        window.localStorage.setItem(
-          PROPOSALS_STORAGE_KEY,
-          JSON.stringify(state.proposals.records),
         );
       } catch {
         /* ignore quota */

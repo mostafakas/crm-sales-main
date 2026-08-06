@@ -12,8 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { saveClient } from "@/lib/firebase/clients";
-import type { ClientSource, ClientPotentialState } from "@/lib/types/client";
+import type { Client, ClientSource, ClientPotentialState } from "@/lib/types/client";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const clientSchema = z.object({
   companyName: z.string().min(1, "Company Name is required"),
@@ -31,11 +32,11 @@ const clientSchema = z.object({
   projectValue: z.coerce.number().min(0, "Invalid value"),
   currency: z.string().min(1, "Currency is required"),
   projectDetails: z.string().min(1, "Project Details are required"),
-  lastFeedback: z.string().optional(),
-  nextAction: z.string().optional(),
+  lastFeedback: z.string().min(1, "Required"),
+  nextAction: z.string().min(1, "Required"),
   firstContactDate: z.string().min(1, "Required"),
-  lastFollowUpDate: z.string().optional(),
-  nextActionDate: z.string().optional(),
+  lastFollowUpDate: z.string().min(1, "Required"),
+  nextActionDate: z.string().min(1, "Required"),
 });
 
 type ClientFormValues = z.infer<typeof clientSchema>;
@@ -44,9 +45,10 @@ interface ClientFormModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
+  initialData?: Client | null;
 }
 
-export function ClientFormModal({ open, onOpenChange, onSuccess }: ClientFormModalProps) {
+export function ClientFormModal({ open, onOpenChange, onSuccess, initialData }: ClientFormModalProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const form = useForm<ClientFormValues>({
@@ -74,24 +76,52 @@ export function ClientFormModal({ open, onOpenChange, onSuccess }: ClientFormMod
 
   React.useEffect(() => {
     if (open) {
-      form.reset();
+      if (initialData) {
+        form.reset({
+          ...initialData,
+          firstContactDate: initialData.firstContactDate.split("T")[0],
+          lastFollowUpDate: initialData.lastFollowUpDate ? initialData.lastFollowUpDate.split("T")[0] : "",
+          nextActionDate: initialData.nextActionDate ? initialData.nextActionDate.split("T")[0] : "",
+        });
+      } else {
+        form.reset({
+          companyName: "",
+          contactName: "",
+          contactTitle: "",
+          email: "",
+          phone: "",
+          country: "",
+          sector: "",
+          source: "Website",
+          potentialState: "Medium",
+          projectValue: 0,
+          currency: "USD",
+          projectDetails: "",
+          lastFeedback: "",
+          nextAction: "",
+          firstContactDate: new Date().toISOString().split("T")[0],
+          lastFollowUpDate: "",
+          nextActionDate: "",
+        });
+      }
     }
-  }, [open, form]);
+  }, [open, initialData, form]);
 
   const onSubmit = async (values: ClientFormValues) => {
     try {
       setIsSubmitting(true);
       await saveClient({
+        id: initialData?.id,
         ...values,
         firstContactDate: new Date(values.firstContactDate).toISOString(),
-        lastFollowUpDate: values.lastFollowUpDate ? new Date(values.lastFollowUpDate).toISOString() : new Date().toISOString(),
-        nextActionDate: values.nextActionDate ? new Date(values.nextActionDate).toISOString() : new Date().toISOString(),
-        lastFeedback: values.lastFeedback || "",
-        nextAction: values.nextAction || "",
+        lastFollowUpDate: new Date(values.lastFollowUpDate).toISOString(),
+        nextActionDate: new Date(values.nextActionDate).toISOString(),
       });
+      toast.success(initialData ? "Client updated successfully!" : "Client added successfully!");
       onSuccess();
     } catch (error) {
       console.error("Failed to save client", error);
+      toast.error("Failed to save client.");
     } finally {
       setIsSubmitting(false);
     }
@@ -105,7 +135,9 @@ export function ClientFormModal({ open, onOpenChange, onSuccess }: ClientFormMod
         {/* Header */}
         <div className="p-6 pb-4 flex items-start justify-between border-b border-border shrink-0">
           <div className="flex flex-col gap-1">
-            <Typography className="text-foreground text-[18px] font-bold">Add New Client</Typography>
+            <Typography className="text-foreground text-[18px] font-bold">
+              {initialData ? "Edit Client" : "Add New Client"}
+            </Typography>
             <Typography className="text-muted-foreground text-xs">Enter the client details below.</Typography>
           </div>
           <button

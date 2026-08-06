@@ -25,6 +25,8 @@ export const metadata: Metadata = {
 
 import { ReduxProvider } from "@/lib/store/provider";
 
+import { Toaster } from "@/components/ui/sonner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -43,6 +45,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         <ReduxProvider>{children}</ReduxProvider>
+        <Toaster />
       </body>
     </html>
   );

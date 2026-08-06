@@ -24,6 +24,7 @@ import {
   selectProposals,
   upsertProposal,
 } from "@/lib/store/slices/proposals-slice";
+import { saveFirebaseProposal } from "@/lib/firebase/proposals";
 import { createStoredProposalFromDraft } from "@/lib/proposal-from-draft";
 import {
   variantsFor,
@@ -51,7 +52,7 @@ export function ReviewStep() {
    * the draft was saved before, so re-saving/exporting updates the same rows
    * instead of creating duplicates. */
   const saveProposal = React.useCallback(
-    (sent: boolean) => {
+    async (sent: boolean) => {
       const usedCodes = records.map((p) => p.code);
       for (const variant of variantsFor(draft.language)) {
         const existing = records.find(
@@ -64,7 +65,12 @@ export function ReviewStep() {
           variant,
         });
         if (!existing) usedCodes.push(stored.code);
-        dispatch(upsertProposal(stored));
+        try {
+          await saveFirebaseProposal(stored);
+          dispatch(upsertProposal(stored));
+        } catch (error) {
+          console.error("Failed to save proposal to Firebase:", error);
+        }
       }
     },
     [dispatch, draft, records],
@@ -91,8 +97,8 @@ export function ReviewStep() {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
 
-  const handleSaveDraft = () => {
-    saveProposal(false);
+  const handleSaveDraft = async () => {
+    await saveProposal(false);
     resetDraft();
     router.push("/client-relations-management/proposals");
   };
@@ -114,7 +120,7 @@ export function ReviewStep() {
         await exportProposalAsDocx(draft, `${baseName}.docx`);
       }
       /* A successfully exported proposal counts as "sent" (active). */
-      saveProposal(true);
+      await saveProposal(true);
       resetDraft();
       router.push("/client-relations-management/proposals");
     } catch (err) {
