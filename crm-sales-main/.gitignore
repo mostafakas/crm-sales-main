@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.*
+
+# Next.js & Build Outputs
+.next/
+out/
+build/
+dist/
+
+# Tauri Desktop Build Outputs
+src-tauri/target/
+src-tauri/gen/
+
+# Environment files
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs & Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# Operating System & IDEs
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+.cursor/
+.claude/
+.agents/
+.covex/
+.opencode/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Misc
+*.pem

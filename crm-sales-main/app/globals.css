@@ -1,0 +1,256 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+@import "shadcn/tailwind.css";
+
+
+
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-janna-regular), "Janna LT", sans-serif;
+  --font-bold: var(--font-janna-bold), "Janna LT", sans-serif;
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-janna-bold), "Janna LT", sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  --color-bg: var(--background);
+  --color-1st-shade-of-bg: var(--muted);
+  --color-2nd-shade-of-bg: var(--secondary);
+  --color-failure: var(--destructive);
+  --color-text: var(--foreground);
+  --color-shade-of-text: var(--muted-foreground);
+
+  /* Typography Tokens - Mapping Figma sizes to Tailwind scale */
+  --font-size-2xl: 20px;
+  --font-size-xl: 18px;
+  --font-size-lg: 16px;
+  --font-size-md: 14px;
+  --font-size-sm: 12px;
+  --font-size-xs: 10px;
+  --font-size-tiny: 9px;
+
+  --color-purple: #9359FF;
+  --color-purple-10: #9359FF1A;
+  --color-purple-5: #9359FF0D;
+  --color-info: #08A1BC;
+  --color-info-10: #08A1BC1A;
+  --color-primary-10: #0047FF1A;
+  --color-primary-5: #0047FF0D;
+  --color-warning-10: #F383281A;
+  --color-warning-5: #F383280D;
+  --color-success-10: #00B9271A;
+  --color-success-5: #00B9270D;
+  --color-destructive-10: #F550501A;
+  --color-destructive-5: #F550500D;
+  --color-border-light: #F7F7F7;
+  --color-text-disabled: #B0B0B0;
+
+  --purple-10: var(--color-purple-10);
+  --primary-10: var(--color-primary-10);
+  --warning-10: var(--color-warning-10);
+  --success-10: var(--color-success-10);
+  --purple-5: var(--color-purple-5);
+  --primary-5: var(--color-primary-5);
+  --warning-5: var(--color-warning-5);
+  --success-5: var(--color-success-5);
+
+
+  --color-pink: #FF4B91;
+  --color-pink-10: #FF4B911A;
+  --color-indigo: #8A2BE2;
+  --color-indigo-10: #8A2BE21A;
+
+  /* Brand-flag accents (used by CRM market cards/tabs) — pulled directly
+   * from Figma. They are NOT semantic tokens; they intentionally bypass
+   * the success/destructive mapping because the design wants flag-true
+   * colors. */
+  --color-saudi: #006C35;
+  --color-saudi-10: #006C351A;
+  --color-egypt-card: #EC1C24;
+  --color-egypt: #FF2B2B;
+  --color-egypt-10: #FF2B2B1A;
+  --color-drafted: #707070;
+
+  --saudi-10: var(--color-saudi-10);
+  --egypt-10: var(--color-egypt-10);
+
+  --pink-10: var(--color-pink-10);
+  --indigo-10: var(--color-indigo-10);
+
+  --color-ai: #AA00FF;
+  --color-ai-10: #AA00FF1A;
+  --color-ai-5: #AA00FF0D;
+
+  --ai-10: var(--color-ai-10);
+  --ai-5: var(--color-ai-5);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+
+:root {
+  --background: #FFFFFF;
+  --foreground: #343434;
+  --card: #FFFFFF;
+  --card-foreground: #343434;
+  --popover: #FFFFFF;
+  --popover-foreground: #343434;
+  --primary: #0047FF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EDF2F7;
+  --secondary-foreground: #343434;
+  --muted: #F8FAFC;
+  --muted-foreground: #707070;
+  --accent: #F8FAFC;
+  --accent-foreground: #0047FF;
+  --destructive: #F55050;
+  --destructive-foreground: #FFFFFF;
+  --success: #00B927;
+  --success-foreground: #FFFFFF;
+  --warning: #F38328;
+  --warning-foreground: #FFFFFF;
+  --border: #EDF2F7;
+  --input: #EDF2F7;
+  --ring: #0047FF;
+  --radius: 0.75rem;
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/10;
+  }
+
+  html {
+    @apply font-sans;
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  b,
+  strong {
+    font-family: var(--font-bold);
+  }
+
+  button,
+  a,
+  [role="button"],
+  label[for],
+  select {
+    cursor: pointer;
+  }
+}
+
+@layer base {
+
+  input,
+  textarea,
+  select,
+  button {
+    font-family: inherit;
+  }
+}
+
+@layer utilities {
+  .font-janna {
+    font-family: var(--font-janna-bold), "Janna LT", sans-serif;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tracking-tight-custom {
+    letter-spacing: -0.02em;
+  }
+
+  .tracking-wide-custom {
+    letter-spacing: 0.01em;
+  }
+
+  /*
+   * Hide native scrollbars while preserving scroll behavior.
+   * Used widely across the dashboard panels — define it once here so the
+   * class isn't a no-op when the project moves between machines/browsers.
+   */
+  .no-scrollbar {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE / old Edge */
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  /*
+   * While a modal dialog is open, Base UI's scroll lock reserves the page
+   * scrollbar gutter (scrollbar-gutter: stable) to avoid layout shift. That
+   * reserved strip sits outside any fixed backdrop, so it shows the white page
+   * background as a band at the right edge. Collapse it while a dialog is open
+   * so the blurred backdrop reaches the screen edge. Scrolling is already
+   * locked, so hiding the scrollbar has no functional cost.
+   */
+  html:has([role="dialog"][data-open]) {
+    scrollbar-gutter: auto !important;
+    scrollbar-width: none;
+  }
+
+  html:has([role="dialog"][data-open])::-webkit-scrollbar {
+    width: 0;
+    display: none;
+  }
+}
