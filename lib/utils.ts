@@ -41,6 +41,6 @@ export function slugify(str: string) {
 /**
  * Safely access nested object properties
  */
-export function getNestedValue(obj: Record<string, unknown>, path: string) {
-  return path.split(".").reduce((acc, part) => acc && acc[part], obj)
+export function getNestedValue(obj: any, path: string) {
+  return path.split(".").reduce((acc: any, part: string) => acc && acc[part], obj)
 }

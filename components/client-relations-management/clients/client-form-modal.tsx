@@ -50,7 +50,7 @@ export function ClientFormModal({ open, onOpenChange, onSuccess }: ClientFormMod
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const form = useForm<ClientFormValues>({
-    resolver: zodResolver(clientSchema),
+    resolver: zodResolver(clientSchema) as any,
     defaultValues: {
       companyName: "",
       contactName: "",

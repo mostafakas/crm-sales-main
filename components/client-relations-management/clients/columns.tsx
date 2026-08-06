@@ -104,11 +104,9 @@ export const columns: ColumnDef<Client>[] = [
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-muted">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
+          <DropdownMenuTrigger className="h-8 w-8 p-0 hover:bg-muted flex items-center justify-center rounded-md outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-background border border-border shadow-md rounded-[12px]">
             <DropdownMenuLabel className="text-xs font-bold">Actions</DropdownMenuLabel>
