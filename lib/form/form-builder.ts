@@ -80,11 +80,11 @@ export function getDirtyValues<T extends FieldValues>(
  * Maps a record of errors (e.g. from API) to react-hook-form errors.
  */
 export function setFormErrors<T extends FieldValues>(
-  form: { setError: (name: any, error: any) => void },
+  form: { setError: import("react-hook-form").UseFormSetError<T> },
   errors: Record<string, string | string[]>
 ): void {
   Object.entries(errors).forEach(([field, message]) => {
-    form.setError(field as any, {
+    form.setError(field as import("react-hook-form").Path<T>, {
       type: "manual",
       message: Array.isArray(message) ? message[0] : message,
     });

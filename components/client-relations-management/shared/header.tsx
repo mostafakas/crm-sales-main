@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Clock, Home, FileText, Plus } from "lucide-react";
+import { Clock, Home, FileText, Plus, Users } from "lucide-react";
 import { LiveClock } from "@/components/shared/live-clock";
 import { SystemSwitcher } from "@/components/shared/system-switcher";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,7 @@ interface ClientRelationsHeaderProps {
 
 const subNav = [
   { label: "Home", href: "/client-relations-management", icon: Home, exact: true },
+  { label: "Clients", href: "/client-relations-management/clients", icon: Users },
   { label: "Proposals", href: "/client-relations-management/proposals", icon: FileText },
 ];
 

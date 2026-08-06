@@ -28,7 +28,7 @@ export default function NotFound() {
               Page Not Found
             </p>
             <p className="font-bold text-md text-muted-foreground leading-[20px] font-janna max-w-[320px]">
-              The page you're looking for doesn't exist or has been moved to
+              The page you&apos;re looking for doesn&apos;t exist or has been moved to
               another location.
             </p>
           </div>

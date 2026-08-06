@@ -28,7 +28,7 @@ export function matchingFields<T extends z.ZodRawShape>(
   fieldB: keyof T & string,
   message: string
 ) {
-  return schema.refine((data: any) => data[fieldA] === data[fieldB], {
+  return schema.refine((data: Record<string, unknown>) => data[fieldA] === data[fieldB], {
     message,
     path: [fieldB],
   });
@@ -42,7 +42,7 @@ export function dateRangeValid<T extends z.ZodRawShape>(
   message = "End date must be after start date"
 ) {
   return schema.refine(
-    (data: any) => {
+    (data: Record<string, unknown>) => {
       const from = data[fromField] as Date | undefined;
       const to = data[toField] as Date | undefined;
       if (!from || !to) return true;

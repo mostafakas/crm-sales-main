@@ -62,7 +62,7 @@ export function AddClientModal({
 
   const onSubmit = (values: ClientValues) => {
     const client: ProposalDraftClient = {
-      id: `c-${Date.now()}`,
+      id: `c-${crypto.randomUUID()}`,
       name: values.name,
       email: values.email,
       country: values.country,

@@ -31,13 +31,14 @@ export function useActiveSystem() {
 
   useEffect(() => {
     if (systemFromPath) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveId(systemFromPath.id);
       window.localStorage.setItem(STORAGE_KEY, systemFromPath.id);
       return;
     }
     const stored = readStoredSystem();
     if (stored) setActiveId(stored);
-  }, [systemFromPath?.id]);
+  }, [systemFromPath, systemFromPath?.id]);
 
   const switchTo = useCallback(
     (id: SystemId) => {
