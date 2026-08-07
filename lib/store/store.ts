@@ -11,6 +11,7 @@ import type { StoredProposal } from "@/lib/types/proposal";
 import { getProposals } from "@/lib/firebase/proposals";
 
 const STORAGE_KEY = "almaster:crm:proposal-draft";
+const PROPOSALS_CACHE_KEY = "almaster:crm:proposals";
 
 export const store = configureStore({
   reducer: {
@@ -64,6 +65,15 @@ function loadPersistedDraft(): ProposalDraft | null {
   }
 }
 
+function loadPersistedProposals(): StoredProposal[] {
+  try {
+    const raw = window.localStorage.getItem(PROPOSALS_CACHE_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as StoredProposal[];
+  } catch {
+    return [];
+  }
+}
 
 /**
  * Lazily hydrate the proposal draft and saved proposals from localStorage
@@ -79,14 +89,25 @@ export function hydrateClientOnly() {
   const persistedDraft = loadPersistedDraft();
   if (persistedDraft) store.dispatch(setDraft(persistedDraft));
 
-  /* Fetch proposals from Firebase */
+  /* Load cached proposals for instant paint */
+  const cachedProposals = loadPersistedProposals();
+  if (cachedProposals.length > 0) {
+    store.dispatch(setProposals(cachedProposals));
+  }
+
+  /* Fetch live proposals from Firebase */
   getProposals()
     .then((data) => {
       store.dispatch(setProposals(data));
+      try {
+        window.localStorage.setItem(PROPOSALS_CACHE_KEY, JSON.stringify(data));
+      } catch (e) {
+        // Ignore quota exceeded errors
+      }
     })
     .catch((err) => {
       console.error("Failed to fetch proposals", err);
-      store.dispatch(setProposals([]));
+      // We don't wipe out the cache on error, just log it.
     });
 
   /* Persist draft on every change, debounced via micro-task. */

@@ -19,11 +19,12 @@ export async function saveClient(client: Omit<Client, "id"> & { id?: string }): 
   const id = client.id || crypto.randomUUID();
   const clientData = {
     ...client,
+    id,
     createdAt: isNew ? new Date().toISOString() : client.createdAt,
   };
   
   await setDoc(doc(db, CLIENTS_COLLECTION, id), clientData);
-  return { id, ...clientData } as Client;
+  return clientData as Client;
 }
 
 export async function deleteClient(id: string): Promise<void> {

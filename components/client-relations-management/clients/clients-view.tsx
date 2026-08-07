@@ -13,17 +13,27 @@ import { getColumns } from "./columns";
 import { toast } from "sonner";
 
 export function ClientsView() {
-  const [clients, setClients] = React.useState<Client[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [clients, setClients] = React.useState<Client[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = window.localStorage.getItem("almaster:crm:clients");
+        if (cached) return JSON.parse(cached);
+      } catch (e) {}
+    }
+    return [];
+  });
+  const [isLoading, setIsLoading] = React.useState(clients.length === 0);
   const [search, setSearch] = React.useState("");
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [editingClient, setEditingClient] = React.useState<Client | null>(null);
 
   const fetchClients = React.useCallback(async () => {
     try {
-      setIsLoading(true);
       const data = await getClients();
       setClients(data);
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("almaster:crm:clients", JSON.stringify(data));
+      }
     } catch (error) {
       console.error("Error fetching clients:", error);
     } finally {
