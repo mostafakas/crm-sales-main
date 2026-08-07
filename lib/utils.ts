@@ -44,3 +44,25 @@ export function slugify(str: string) {
 export function getNestedValue(obj: any, path: string) {
   return path.split(".").reduce((acc: any, part: string) => acc && acc[part], obj)
 }
+
+/**
+ * Removes undefined values from an object recursively,
+ * returning a new clean object suitable for Firestore.
+ */
+export function cleanUndefined<T>(obj: T): T {
+  if (obj === undefined) return null as any;
+  if (obj === null || typeof obj !== "object") return obj;
+  if (Array.isArray(obj)) {
+    return obj.map(cleanUndefined) as any;
+  }
+  const result: any = {};
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const val = obj[key];
+      if (val !== undefined) {
+        result[key] = cleanUndefined(val);
+      }
+    }
+  }
+  return result as T;
+}

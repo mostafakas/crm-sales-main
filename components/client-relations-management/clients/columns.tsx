@@ -120,7 +120,12 @@ export const getColumns = (
               Copy Email
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-xs font-medium cursor-pointer">View details</DropdownMenuItem>
+            <DropdownMenuItem 
+              className="text-xs font-medium cursor-pointer"
+              onClick={() => onEdit(client)}
+            >
+              View details
+            </DropdownMenuItem>
             <DropdownMenuItem 
               className="text-xs font-medium cursor-pointer"
               onClick={() => onEdit(client)}

@@ -1,6 +1,7 @@
 import { collection, doc, getDocs, setDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 import { db } from "./config";
 import type { StoredProposal } from "@/lib/types/proposal";
+import { cleanUndefined } from "@/lib/utils";
 
 const PROPOSALS_COLLECTION = "proposals";
 
@@ -15,7 +16,8 @@ export async function getProposals(): Promise<StoredProposal[]> {
 }
 
 export async function saveFirebaseProposal(proposal: StoredProposal): Promise<StoredProposal> {
-  await setDoc(doc(db, PROPOSALS_COLLECTION, proposal.id), proposal);
+  const cleanProposal = cleanUndefined(proposal);
+  await setDoc(doc(db, PROPOSALS_COLLECTION, proposal.id), cleanProposal);
   return proposal;
 }
 

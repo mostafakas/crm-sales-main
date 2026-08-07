@@ -1,6 +1,7 @@
 import { collection, doc, getDocs, setDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 import { db } from "./config";
 import type { Client } from "@/lib/types/client";
+import { cleanUndefined } from "@/lib/utils";
 
 const CLIENTS_COLLECTION = "clients";
 
@@ -22,8 +23,8 @@ export async function saveClient(client: Omit<Client, "id"> & { id?: string }): 
     id,
     createdAt: isNew ? new Date().toISOString() : client.createdAt,
   };
-  
-  await setDoc(doc(db, CLIENTS_COLLECTION, id), clientData);
+  const cleanData = cleanUndefined(clientData);
+  await setDoc(doc(db, CLIENTS_COLLECTION, id), cleanData);
   return clientData as Client;
 }
 

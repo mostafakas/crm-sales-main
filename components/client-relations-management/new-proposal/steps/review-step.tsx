@@ -40,6 +40,7 @@ import {
   exportProposalAsDocx,
 } from "@/lib/proposal-export";
 import { ProposalDocumentFullscreen } from "./proposal-fullscreen";
+import { toast } from "sonner";
 
 export function ReviewStep() {
   const router = useRouter();
@@ -70,6 +71,8 @@ export function ReviewStep() {
           dispatch(upsertProposal(stored));
         } catch (error) {
           console.error("Failed to save proposal to Firebase:", error);
+          toast.error("Failed to save proposal.");
+          throw error;
         }
       }
     },
@@ -98,9 +101,14 @@ export function ReviewStep() {
   }, [page, totalPages]);
 
   const handleSaveDraft = async () => {
-    await saveProposal(false);
-    resetDraft();
-    router.push("/client-relations-management/proposals");
+    try {
+      await saveProposal(false);
+      resetDraft();
+      toast.success("Draft saved successfully.");
+      router.push("/client-relations-management/proposals");
+    } catch (err) {
+      // toast is already shown inside saveProposal
+    }
   };
 
   const handleExport = async (format: "pdf" | "docx") => {
@@ -122,10 +130,14 @@ export function ReviewStep() {
       /* A successfully exported proposal counts as "sent" (active). */
       await saveProposal(true);
       resetDraft();
+      toast.success(`Proposal exported as ${format.toUpperCase()}.`);
       router.push("/client-relations-management/proposals");
     } catch (err) {
       console.error("Export failed:", err);
-      alert(`Failed to export proposal as ${format.toUpperCase()}.`);
+      // Only show alert if it's an export error (save errors show their own toast)
+      if (err instanceof Error && err.message === "Document not ready.") {
+        alert(`Failed to export proposal as ${format.toUpperCase()}.`);
+      }
     } finally {
       setExporting(null);
     }

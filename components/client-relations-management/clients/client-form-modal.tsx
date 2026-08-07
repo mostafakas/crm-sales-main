@@ -32,11 +32,11 @@ const clientSchema = z.object({
   projectValue: z.coerce.number().min(0, "Invalid value"),
   currency: z.string().min(1, "Currency is required"),
   projectDetails: z.string().min(1, "Project Details are required"),
-  lastFeedback: z.string().min(1, "Required"),
-  nextAction: z.string().min(1, "Required"),
+  lastFeedback: z.string().optional(),
+  nextAction: z.string().optional(),
   firstContactDate: z.string().min(1, "Required"),
-  lastFollowUpDate: z.string().min(1, "Required"),
-  nextActionDate: z.string().min(1, "Required"),
+  lastFollowUpDate: z.string().optional(),
+  nextActionDate: z.string().optional(),
 });
 
 type ClientFormValues = z.infer<typeof clientSchema>;
@@ -112,10 +112,11 @@ export function ClientFormModal({ open, onOpenChange, onSuccess, initialData }: 
       setIsSubmitting(true);
       await saveClient({
         id: initialData?.id,
+        createdAt: initialData?.createdAt,
         ...values,
-        firstContactDate: new Date(values.firstContactDate).toISOString(),
-        lastFollowUpDate: new Date(values.lastFollowUpDate).toISOString(),
-        nextActionDate: new Date(values.nextActionDate).toISOString(),
+        firstContactDate: values.firstContactDate ? new Date(values.firstContactDate).toISOString() : new Date().toISOString(),
+        lastFollowUpDate: values.lastFollowUpDate ? new Date(values.lastFollowUpDate).toISOString() : undefined,
+        nextActionDate: values.nextActionDate ? new Date(values.nextActionDate).toISOString() : undefined,
       });
       toast.success(initialData ? "Client updated successfully!" : "Client added successfully!");
       onSuccess();

@@ -19,8 +19,8 @@ const jannaBold = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Almaster HR System",
-  description: "Almaster HR System",
+  title: "Almaster CRM",
+  description: "Almaster Client Relations Management",
 };
 
 import { ReduxProvider } from "@/lib/store/provider";
