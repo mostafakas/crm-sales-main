@@ -134,7 +134,7 @@ function InfoCard({ icon, label, value, subValue, valueClass }: { icon: React.Re
   return (
     <div className="flex gap-3">
       <div className="mt-0.5 size-8 rounded-[8px] bg-primary/10 flex items-center justify-center text-primary shrink-0">
-        {React.cloneElement(icon as React.ReactElement, { className: "size-4" })}
+        {React.cloneElement(icon as any, { className: "size-4" })}
       </div>
       <div className="flex flex-col">
         <span className="text-xs font-bold text-muted-foreground mb-1">{label}</span>
