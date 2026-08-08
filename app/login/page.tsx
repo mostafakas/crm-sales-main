@@ -75,6 +75,8 @@ export default function LoginPage() {
                 height={300}
                 className="relative z-10 object-contain drop-shadow-xl"
                 priority
+                quality={100}
+                unoptimized
               />
             </div>
             
@@ -84,7 +86,15 @@ export default function LoginPage() {
                 isRevealed ? "opacity-100 max-h-[80px]" : "opacity-0 max-h-0"
               }`}
             >
-              <h1 className="text-3xl font-black text-[#0047ff] tracking-tight drop-shadow-sm">AlMASTER</h1>
+              <Image
+                src="/images/logo-full.png"
+                alt="AlMaster"
+                width={240}
+                height={60}
+                className="object-contain drop-shadow-sm"
+                quality={100}
+                unoptimized
+              />
             </div>
           </div>
 
