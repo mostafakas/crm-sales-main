@@ -33,16 +33,30 @@ const MODULE_PANELS: Record<ModuleKey, React.ComponentType> = {
 export function BuilderStep() {
   const router = useRouter();
   const { draft, toggleModule, markStepComplete } = useProposalDraft();
-  const [expanded, setExpanded] = React.useState<Set<ModuleKey>>(
-    new Set(),
-  );
+  const [expanded, setExpanded] = React.useState<ModuleKey | null>("about");
   const [pageIndex, setPageIndex] = React.useState(1);
 
   const toggleExpand = (key: ModuleKey) => {
     setExpanded((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
+      const next = prev === key ? null : key;
+      if (next) {
+        // Find which page index this module maps to
+        let idx = 3; // 1 (Cover) + 1 (TOC) = 2, so first module starts at 3
+        for (const k of MODULE_ORDER) {
+          if (k === next) break;
+          const map = {
+            about: draft.about.enabled,
+            service: draft.serviceDetails.enabled,
+            why: draft.why.enabled,
+            scope: draft.scope.enabled,
+            quotation: draft.quotation.enabled,
+            support: draft.support.enabled,
+            whatWeNeed: draft.whatWeNeed.enabled,
+          };
+          if (map[k]) idx += 1;
+        }
+        setPageIndex(idx);
+      }
       return next;
     });
   };
@@ -105,7 +119,7 @@ export function BuilderStep() {
                     itemCount={itemCounts[key]}
                     enabled={moduleEnabled(key)}
                     onToggle={() => toggleModule(key)}
-                    expanded={expanded.has(key)}
+                    expanded={expanded === key}
                     onExpandToggle={() => toggleExpand(key)}>
                     <Panel />
                   </ModuleShell>

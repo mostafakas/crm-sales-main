@@ -245,61 +245,100 @@ export function AboutModulePanel() {
         open={open.experts}
         onToggle={t("experts")}
         >
-        <div className="bg-background border border-border rounded-[8px] p-3 flex flex-col gap-2">
-          <div className="bg-muted h-9 px-3 rounded-[6px] flex items-center gap-2">
-            <Search className="size-3 text-muted-foreground" />
-            <input
-              type="search"
-              placeholder="Search by name or role..."
-              className="bg-transparent outline-none text-xs font-bold w-full"
-            />
-          </div>
+        <div className="flex flex-col gap-3">
           {about.experts.map((expert) => (
-            <label
+            <div
               key={expert.id}
-              className="flex items-center gap-3 px-2 py-2 rounded-[6px] hover:bg-muted cursor-pointer">
-              <input
-                type="checkbox"
-                checked={expert.selected}
-                onChange={(e) => {
-                  const next = about.experts.map((x) =>
-                    x.id === expert.id
-                      ? { ...x, selected: e.target.checked }
-                      : x,
-                  );
-                  updateModule("about", { experts: next });
-                }}
-                className="size-3.5"
-              />
-              <Avatar className="size-7">
-                <AvatarImage src={expert.avatar} />
-                <AvatarFallback>{expert.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                <span className="text-xs font-bold text-foreground truncate">
-                  {expert.name}
-                </span>
-                <span className="text-[10px] font-bold text-muted-foreground truncate">
-                  {expert.role}
-                </span>
+              className="bg-background border border-border rounded-[8px] p-3 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={expert.selected}
+                    onChange={(e) => {
+                      const next = about.experts.map((x) =>
+                        x.id === expert.id
+                          ? { ...x, selected: e.target.checked }
+                          : x,
+                      );
+                      updateModule("about", { experts: next });
+                    }}
+                    className="size-3.5"
+                  />
+                  <span className="text-xs font-bold text-foreground">
+                    Include in Proposal
+                  </span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = about.experts.filter((x) => x.id !== expert.id);
+                    updateModule("about", { experts: next });
+                  }}
+                  className="text-xs font-bold text-destructive hover:underline">
+                  Remove
+                </button>
               </div>
-            </label>
+              <div className="flex items-start gap-4">
+                <ImageUploadField
+                  variant="avatar"
+                  value={expert.avatar || ""}
+                  onChange={(url) => {
+                    const next = about.experts.map((x) =>
+                      x.id === expert.id ? { ...x, avatar: url } : x,
+                    );
+                    updateModule("about", { experts: next });
+                  }}
+                />
+                <div className="flex flex-col gap-2 flex-1">
+                  <BilingualField
+                    fieldPath={`about.experts.${expert.id}.name`}
+                    value={expert.name}
+                    onChange={(v) => {
+                      const next = about.experts.map((x) =>
+                        x.id === expert.id ? { ...x, name: v } : x,
+                      );
+                      updateModule("about", { experts: next });
+                    }}
+                    placeholder="Expert Name"
+                    className="bg-muted h-9 px-3 rounded-[8px] outline-none text-xs font-bold text-foreground w-full"
+                  />
+                  <BilingualField
+                    fieldPath={`about.experts.${expert.id}.role`}
+                    value={expert.role}
+                    onChange={(v) => {
+                      const next = about.experts.map((x) =>
+                        x.id === expert.id ? { ...x, role: v } : x,
+                      );
+                      updateModule("about", { experts: next });
+                    }}
+                    placeholder="Expert Title / Role"
+                    className="bg-muted h-9 px-3 rounded-[8px] outline-none text-xs font-bold text-foreground w-full"
+                  />
+                </div>
+              </div>
+            </div>
           ))}
-          <div className="flex items-center gap-1.5 flex-wrap mt-1">
-            {about.experts
-              .filter((e) => e.selected)
-              .map((e) => (
-                <span
-                  key={e.id}
-                  className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2 h-[22px] rounded-[6px] text-[10px] font-bold">
-                  <Avatar className="size-3.5">
-                    <AvatarImage src={e.avatar} />
-                    <AvatarFallback>{e.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  {e.name}
-                </span>
-              ))}
-          </div>
+          <button
+            type="button"
+            onClick={() => {
+              updateModule("about", {
+                experts: [
+                  ...about.experts,
+                  {
+                    id: `ex-${Date.now()}`,
+                    name: "",
+                    role: "",
+                    expertise: [],
+                    selected: true,
+                  },
+                ],
+              });
+            }}
+            className="self-start text-xs font-bold text-primary flex items-center gap-1 hover:underline">
+            <Plus className="size-3" strokeWidth={2.4} />
+            Add Expert
+          </button>
         </div>
       </ModuleSubItem>
     </div>
