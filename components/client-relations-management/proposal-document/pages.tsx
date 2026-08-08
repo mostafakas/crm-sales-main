@@ -2066,90 +2066,96 @@ export function buildProposalSections(
     }
 
     /* 4 — Values / Key Facts / Certifications */
-    sections.push({
-      id: "values",
-      blocks: landscape
-        ? [
-            {
-              key: "values-row",
-              node: (
-                <div className="flex flex-col gap-3 h-full">
-                  <div className="grid grid-cols-2 gap-3 flex-1 min-h-0">
-                    <CoreValuesCard draft={draft} big={false} />
-                    <KeyFactsCard draft={draft} big={false} />
+    if (draft.about.valuesEnabled) {
+      sections.push({
+        id: "values",
+        blocks: landscape
+          ? [
+              {
+                key: "values-row",
+                node: (
+                  <div className="flex flex-col gap-3 h-full">
+                    <div className="grid grid-cols-2 gap-3 flex-1 min-h-0">
+                      <CoreValuesCard draft={draft} big={false} />
+                      <KeyFactsCard draft={draft} big={false} />
+                    </div>
+                    <CertificationsCard draft={draft} cols={3} />
                   </div>
-                  <CertificationsCard draft={draft} cols={3} />
-                </div>
-              ),
-            },
-          ]
-        : [
-            { key: "core", node: <CoreValuesCard draft={draft} big /> },
-            { key: "facts", node: <KeyFactsCard draft={draft} big /> },
-            {
-              key: "certs",
-              node: <CertificationsCard draft={draft} cols={2} />,
-            },
-          ],
-    });
+                ),
+              },
+            ]
+          : [
+              { key: "core", node: <CoreValuesCard draft={draft} big /> },
+              { key: "facts", node: <KeyFactsCard draft={draft} big /> },
+              {
+                key: "certs",
+                node: <CertificationsCard draft={draft} cols={2} />,
+              },
+            ],
+      });
+    }
 
     /* 5 — Experts */
-    const experts = a.experts.filter((e) => e.selected);
-    const rows = chunk(experts, 2);
-    sections.push({
-      id: "experts",
-      title: "Our Experts",
-      blocks: rows.map((row, i) => ({
-        key: `row-${i}`,
-        node: (
-          <div className="grid grid-cols-2 gap-3">
-            {row.map((ex) => (
-              <ExpertCard key={ex.id} ex={ex} landscape={landscape} />
-            ))}
-          </div>
-        ),
-      })),
-    });
+    if (draft.about.expertsEnabled) {
+      const experts = a.experts.filter((e) => e.selected);
+      const rows = chunk(experts, 2);
+      sections.push({
+        id: "experts",
+        title: "Our Experts",
+        blocks: rows.map((row, i) => ({
+          key: `row-${i}`,
+          node: (
+            <div className="grid grid-cols-2 gap-3">
+              {row.map((ex) => (
+                <ExpertCard key={ex.id} ex={ex} landscape={landscape} />
+              ))}
+            </div>
+          ),
+        })),
+      });
+    }
 
     /* 6 — Brands / Partners.
      * These are AlMaster's fixed client/partner logos (identical on every
      * proposal), so always render the bundled asset set. A draft may still
      * override them by supplying its own `brands`/`partners` with logo URLs. */
-    const brands = a.brands.some((b) => b.logo)
-      ? a.brands.map((b) => ({ name: b.name, src: b.logo }))
-      : BRAND_LOGOS;
-    const partners = a.partners.some((p) => p.logo)
-      ? a.partners.map((p) => ({ name: p.name, src: p.logo }))
-      : PARTNER_LOGOS;
-    const cols = landscape ? 8 : 6;
-    const cellH = landscape ? 80 : 92;
-    sections.push({
-      id: "brands",
-      blocks: [
-        {
-          key: "brands",
-          node: (
-            <LogoGrid
-              heading="Brands Trust Us"
-              items={brands}
-              cols={cols}
-              cellH={cellH}
-            />
-          ),
-        },
-        {
-          key: "partners",
-          node: (
-            <LogoGrid
-              heading="Our Partners"
-              items={partners}
-              cols={cols}
-              cellH={cellH}
-            />
-          ),
-        },
-      ],
-    });
+    if (draft.about.brandsEnabled) {
+      const brands = a.brands.some((b) => b.logo)
+        ? a.brands.map((b) => ({ name: b.name, src: b.logo }))
+        : BRAND_LOGOS;
+      const partners = a.partners.some((p) => p.logo)
+        ? a.partners.map((p) => ({ name: p.name, src: p.logo }))
+        : PARTNER_LOGOS;
+      const cols = landscape ? 8 : 6;
+      const cellH = landscape ? 80 : 92;
+      sections.push({
+        id: "brands",
+        blocks: [
+          {
+            key: "brands",
+            node: (
+              <LogoGrid
+                heading="Brands Trust Us"
+                items={brands}
+                cols={cols}
+                cellH={cellH}
+              />
+            ),
+          },
+          {
+            key: "partners",
+            node: (
+              <LogoGrid
+                heading="Our Partners"
+                items={partners}
+                cols={cols}
+                cellH={cellH}
+              />
+            ),
+          },
+        ],
+      });
+    }
   }
 
   /* 7 — Service Details */
@@ -2265,7 +2271,7 @@ export function buildProposalSections(
     });
 
     /* 9 — Similar projects */
-    if (w.similarProjects.length) {
+    if (draft.why.similarEnabled && w.similarProjects.length) {
       const project = w.similarProjects[0]!;
       sections.push({
         id: "similar",
@@ -2432,7 +2438,7 @@ export function buildProposalSections(
           ],
     });
 
-    if (draft.quotation.packages.length) {
+    if (draft.quotation.packagesEnabled && draft.quotation.packages.length) {
       sections.push({
         id: "pricing",
         title: "Our Packages",

@@ -13,6 +13,9 @@ export function createEmptyProposalDraft(): ProposalDraft {
     shortDescription: "",
     about: {
       enabled: true,
+      valuesEnabled: true,
+      expertsEnabled: true,
+      brandsEnabled: true,
       imageUrl: "",
       whoWeAre: "",
       ourMission: "",
@@ -154,6 +157,7 @@ export function createEmptyProposalDraft(): ProposalDraft {
     },
     why: {
       enabled: true,
+      similarEnabled: true,
       whyChooseAlMaster: "",
       whyPerfectFit: [
         {
@@ -253,6 +257,7 @@ export function createEmptyProposalDraft(): ProposalDraft {
     },
     quotation: {
       enabled: true,
+      packagesEnabled: true,
       mode: "quotation",
       lineItems: [
         {

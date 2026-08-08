@@ -13,19 +13,29 @@ import { WizardStepHeader } from "../wizard-step-header";
 import { ModuleShell } from "../module-shell";
 import { LivePreviewPanel } from "../live-preview-panel";
 import { AboutModulePanel } from "../modules/about-module-panel";
+import { AboutValuesPanel } from "../modules/about-values-panel";
+import { AboutExpertsPanel } from "../modules/about-experts-panel";
+import { AboutBrandsPanel } from "../modules/about-brands-panel";
 import { ServiceModulePanel } from "../modules/service-module-panel";
 import { WhyModulePanel } from "../modules/why-module-panel";
+import { WhySimilarPanel } from "../modules/why-similar-panel";
 import { ScopeModulePanel } from "../modules/scope-module-panel";
 import { QuotationModulePanel } from "../modules/quotation-module-panel";
+import { QuotationPackagesPanel } from "../modules/quotation-packages-panel";
 import { SupportModulePanel } from "../modules/support-module-panel";
 import { WhatWeNeedModulePanel } from "../modules/what-we-need-module-panel";
 
 const MODULE_PANELS: Record<ModuleKey, React.ComponentType> = {
   about: AboutModulePanel,
+  about_values: AboutValuesPanel,
+  about_experts: AboutExpertsPanel,
+  about_brands: AboutBrandsPanel,
   service: ServiceModulePanel,
   why: WhyModulePanel,
+  why_similar: WhySimilarPanel,
   scope: ScopeModulePanel,
   quotation: QuotationModulePanel,
+  packages: QuotationPackagesPanel,
   support: SupportModulePanel,
   whatWeNeed: WhatWeNeedModulePanel,
 };
@@ -46,10 +56,15 @@ export function BuilderStep() {
           if (k === next) break;
           const map = {
             about: draft.about.enabled,
+            about_values: draft.about.valuesEnabled,
+            about_experts: draft.about.expertsEnabled,
+            about_brands: draft.about.brandsEnabled,
             service: draft.serviceDetails.enabled,
             why: draft.why.enabled,
+            why_similar: draft.why.similarEnabled,
             scope: draft.scope.enabled,
             quotation: draft.quotation.enabled,
+            packages: draft.quotation.packagesEnabled,
             support: draft.support.enabled,
             whatWeNeed: draft.whatWeNeed.enabled,
           };
@@ -62,11 +77,16 @@ export function BuilderStep() {
   };
 
   const itemCounts: Record<ModuleKey, number> = {
-    about: 6,
+    about: 3,
+    about_values: 3,
+    about_experts: 1,
+    about_brands: 2,
     service: 4,
-    why: 3,
+    why: 4,
+    why_similar: 1,
     scope: 4,
     quotation: 3,
+    packages: 1,
     support: 3,
     whatWeNeed: 3,
   };
@@ -74,10 +94,15 @@ export function BuilderStep() {
   const moduleEnabled = (key: ModuleKey) => {
     const map = {
       about: draft.about.enabled,
+      about_values: draft.about.valuesEnabled,
+      about_experts: draft.about.expertsEnabled,
+      about_brands: draft.about.brandsEnabled,
       service: draft.serviceDetails.enabled,
       why: draft.why.enabled,
+      why_similar: draft.why.similarEnabled,
       scope: draft.scope.enabled,
       quotation: draft.quotation.enabled,
+      packages: draft.quotation.packagesEnabled,
       support: draft.support.enabled,
       whatWeNeed: draft.whatWeNeed.enabled,
     };

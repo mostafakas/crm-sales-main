@@ -47,10 +47,15 @@ type ModuleSlot =
 
 const MODULE_KEY_MAP: Record<ModuleKey, ModuleSlot> = {
   about: "about",
+  about_values: "about",
+  about_experts: "about",
+  about_brands: "about",
   service: "serviceDetails",
   why: "why",
+  why_similar: "why",
   scope: "scope",
   quotation: "quotation",
+  packages: "quotation",
   support: "support",
   whatWeNeed: "whatWeNeed",
 };
@@ -89,12 +94,20 @@ const proposalsSlice = createSlice({
     },
 
     toggleModule: (state, action: PayloadAction<ModuleKey>) => {
-      const slot = MODULE_KEY_MAP[action.payload];
-      const current = state.draft[slot] as unknown as { enabled: boolean };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const key = action.payload;
+      const slot = MODULE_KEY_MAP[key];
+      const current = state.draft[slot] as any;
+
+      let flag = "enabled";
+      if (key === "about_values") flag = "valuesEnabled";
+      if (key === "about_experts") flag = "expertsEnabled";
+      if (key === "about_brands") flag = "brandsEnabled";
+      if (key === "why_similar") flag = "similarEnabled";
+      if (key === "packages") flag = "packagesEnabled";
+
       (state.draft as any)[slot] = {
         ...current,
-        enabled: !current.enabled,
+        [flag]: !current[flag],
       };
       state.draft.updatedAt = new Date().toISOString();
     },

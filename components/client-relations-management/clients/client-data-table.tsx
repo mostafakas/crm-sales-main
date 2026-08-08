@@ -97,7 +97,7 @@ export function ClientDataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="border-border/40 hover:bg-primary/5 transition-colors even:bg-muted/20"
+                  className="border-border/40 hover:bg-blue-50/60 transition-colors even:bg-blue-50/30"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-3">

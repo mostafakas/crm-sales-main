@@ -42,10 +42,15 @@ function Collapsible({
 
 const MODULE_ICONS: Record<ModuleKey, React.ElementType> = {
   about: Building2,
+  about_values: Building2,
+  about_experts: Building2,
+  about_brands: Building2,
   service: Layers,
   why: Award,
+  why_similar: Award,
   scope: Calendar,
   quotation: CreditCard,
+  packages: CreditCard,
   support: Shield,
   whatWeNeed: ClipboardList,
 };

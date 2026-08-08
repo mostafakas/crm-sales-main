@@ -129,17 +129,17 @@ export const getColumns = (
             <span className="sr-only">Open menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-background border border-border shadow-md rounded-[12px] min-w-[120px] font-janna p-1.5">
+          <DropdownMenuContent align="end" className="bg-background border border-border shadow-md rounded-[12px] min-w-[120px] font-janna p-1.5" onClick={(e) => e.stopPropagation()}>
             <DropdownMenuItem
               className="text-xs font-bold cursor-pointer flex items-center gap-2 hover:bg-muted rounded-[8px]"
-              onClick={() => onView(client)}
+              onClick={(e) => { e.stopPropagation(); onView(client); }}
             >
               <Eye className="size-3.5" />
-              <span>View Details</span>
+              <span>Open</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-xs font-bold cursor-pointer flex items-center gap-2 hover:bg-muted rounded-[8px]"
-              onClick={() => onEdit(client)}
+              onClick={(e) => { e.stopPropagation(); onEdit(client); }}
             >
               <Pencil className="size-3.5" />
               <span>Edit</span>
@@ -147,7 +147,7 @@ export const getColumns = (
             <DropdownMenuSeparator className="my-1" />
             <DropdownMenuItem 
               className="text-xs font-bold text-destructive cursor-pointer flex items-center gap-2 hover:bg-destructive/10 hover:text-destructive rounded-[8px]"
-              onClick={() => onDelete(client)}
+              onClick={(e) => { e.stopPropagation(); onDelete(client); }}
             >
               <Trash className="size-3.5" />
               <span>Delete</span>

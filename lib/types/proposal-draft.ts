@@ -69,6 +69,9 @@ export interface PartnerLogo {
 
 export interface AboutModuleDraft {
   enabled: boolean;
+  valuesEnabled: boolean;
+  expertsEnabled: boolean;
+  brandsEnabled: boolean;
   imageUrl: string;
   whoWeAre: string;
   ourMission: string;
@@ -114,6 +117,7 @@ export interface SimilarProject {
 
 export interface WhyModuleDraft {
   enabled: boolean;
+  similarEnabled: boolean;
   whyChooseAlMaster: string;
   whyPerfectFit: { id: string; title: string; description: string }[];
   whatOthersDont: string;
@@ -163,6 +167,7 @@ export interface PaymentTerm {
 
 export interface QuotationModuleDraft {
   enabled: boolean;
+  packagesEnabled: boolean;
   mode: QuotationMode;
   lineItems: QuotationLineItem[];
   packages: QuotationPackage[];
@@ -203,10 +208,15 @@ export interface WhatWeNeedModuleDraft {
 
 export type ModuleKey =
   | "about"
+  | "about_values"
+  | "about_experts"
+  | "about_brands"
   | "service"
   | "why"
+  | "why_similar"
   | "scope"
   | "quotation"
+  | "packages"
   | "support"
   | "whatWeNeed";
 
@@ -264,10 +274,15 @@ export interface ModuleMeta {
 
 export const MODULE_ORDER: ModuleKey[] = [
   "about",
+  "about_values",
+  "about_experts",
+  "about_brands",
   "service",
   "why",
+  "why_similar",
   "scope",
   "quotation",
+  "packages",
   "support",
   "whatWeNeed",
 ];
@@ -276,8 +291,26 @@ export const MODULE_META: Record<ModuleKey, Omit<ModuleMeta, "itemCount">> = {
   about: {
     key: "about",
     title: "About AlMaster",
-    hint: "Inherited from CMS · Editable",
+    hint: "Who We Are, Mission & Vision",
     icon: "building",
+  },
+  about_values: {
+    key: "about_values",
+    title: "Core Values",
+    hint: "Core Values, Facts & Certifications",
+    icon: "star",
+  },
+  about_experts: {
+    key: "about_experts",
+    title: "Our Experts",
+    hint: "Team members & Leadership",
+    icon: "users",
+  },
+  about_brands: {
+    key: "about_brands",
+    title: "Brands & Partners",
+    hint: "Trusted clients and partners",
+    icon: "briefcase",
   },
   service: {
     key: "service",
@@ -288,8 +321,14 @@ export const MODULE_META: Record<ModuleKey, Omit<ModuleMeta, "itemCount">> = {
   why: {
     key: "why",
     title: "Why AlMaster",
-    hint: "Differentiators & similar projects",
+    hint: "Differentiators & Advantages",
     icon: "award",
+  },
+  why_similar: {
+    key: "why_similar",
+    title: "Similar Projects",
+    hint: "Case studies & past work",
+    icon: "image",
   },
   scope: {
     key: "scope",
@@ -299,9 +338,15 @@ export const MODULE_META: Record<ModuleKey, Omit<ModuleMeta, "itemCount">> = {
   },
   quotation: {
     key: "quotation",
-    title: "Quotation / Packages",
+    title: "Quotation (Invoice)",
     hint: "Line-item quotation",
     icon: "credit-card",
+  },
+  packages: {
+    key: "packages",
+    title: "Our Packages",
+    hint: "Pricing packages and tiers",
+    icon: "package",
   },
   support: {
     key: "support",

@@ -39,10 +39,15 @@ export function ProposalDraftProvider({
 
 type ModulePatchMap = {
   about: Partial<AboutModuleDraft>;
+  about_values: Partial<AboutModuleDraft>;
+  about_experts: Partial<AboutModuleDraft>;
+  about_brands: Partial<AboutModuleDraft>;
   service: Partial<ServiceDetailsModuleDraft>;
   why: Partial<WhyModuleDraft>;
+  why_similar: Partial<WhyModuleDraft>;
   scope: Partial<ScopeModuleDraft>;
   quotation: Partial<QuotationModuleDraft>;
+  packages: Partial<QuotationModuleDraft>;
   support: Partial<SupportModuleDraft>;
   whatWeNeed: Partial<WhatWeNeedModuleDraft>;
 };
