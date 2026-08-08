@@ -9,10 +9,11 @@ export function ProposalsInitializer({ proposals }: { proposals: StoredProposal[
   const dispatch = useAppDispatch();
   const initialized = React.useRef(false);
 
-  if (!initialized.current) {
-    dispatch(setProposals(proposals));
+  React.useEffect(() => {
+    if (initialized.current) return;
     initialized.current = true;
-  }
+    dispatch(setProposals(proposals));
+  }, [dispatch, proposals]);
 
   return null;
 }

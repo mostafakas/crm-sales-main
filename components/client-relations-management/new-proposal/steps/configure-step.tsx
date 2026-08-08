@@ -117,27 +117,6 @@ const COUNTRY_STYLE: Record<
   global: { tint: "bg-[rgba(0,71,255,0.1)]", titleColor: "text-[#0047ff]" },
 };
 
-const SAMPLE_CLIENTS: ProposalDraftClient[] = [
-  {
-    id: "c-1",
-    name: "Matt Scott",
-    email: "mattscott@example.com",
-    avatar: "https://ui.shadcn.com/avatars/01.png",
-  },
-  {
-    id: "c-2",
-    name: "Matt Scott",
-    email: "mattscott@example.com",
-    avatar: "https://ui.shadcn.com/avatars/02.png",
-  },
-  {
-    id: "c-3",
-    name: "Matt Scott",
-    email: "mattscott@example.com",
-    avatar: "https://ui.shadcn.com/avatars/03.png",
-  },
-];
-
 export function ConfigureStep() {
   const router = useRouter();
   const { draft, updateDraft, setArOverride } = useProposalDraft();
@@ -162,7 +141,10 @@ export function ConfigureStep() {
     id: c.id,
     name: c.companyName,
     email: c.email,
-    avatar: "https://ui.shadcn.com/avatars/01.png",
+    /* No real per-client photo exists yet — leave it unset so the UI falls
+     * back to initials instead of showing the same stock photo for every
+     * client (see the AvatarFallback below). */
+    avatar: undefined,
   });
 
   const expiresAtLabel = React.useMemo(() => {

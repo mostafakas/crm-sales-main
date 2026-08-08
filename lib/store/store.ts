@@ -4,7 +4,6 @@ import proposalsReducer, {
   setDraft,
   setProposals,
 } from "./slices/proposals-slice";
-import { baseApi } from "./services/baseApi";
 import { createEmptyProposalDraft } from "@/lib/data/proposal-draft-seed";
 import type { ProposalDraft } from "@/lib/types/proposal-draft";
 import type { StoredProposal } from "@/lib/types/proposal";
@@ -17,12 +16,7 @@ export const store = configureStore({
   reducer: {
     ui: uiReducer,
     proposals: proposalsReducer,
-    [baseApi.reducerPath]: baseApi.reducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }).concat(baseApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

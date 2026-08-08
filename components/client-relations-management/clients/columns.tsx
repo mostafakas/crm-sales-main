@@ -65,7 +65,9 @@ export const getColumns = (
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue("potentialState") as string;
-      const getVariant = (state: string) => {
+      const getVariant = (
+        state: string,
+      ): "default" | "outline" | "secondary" | "destructive" => {
         switch (state) {
           case "Won": return "default";
           case "High": return "outline";
@@ -75,7 +77,7 @@ export const getColumns = (
           default: return "secondary";
         }
       };
-      return <Badge variant={getVariant(status) as any} className="text-[10px]">{status}</Badge>;
+      return <Badge variant={getVariant(status)} className="text-[10px]">{status}</Badge>;
     },
   },
   {
@@ -120,13 +122,7 @@ export const getColumns = (
               Copy Email
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem 
-              className="text-xs font-medium cursor-pointer"
-              onClick={() => onEdit(client)}
-            >
-              View details
-            </DropdownMenuItem>
-            <DropdownMenuItem 
+            <DropdownMenuItem
               className="text-xs font-medium cursor-pointer"
               onClick={() => onEdit(client)}
             >

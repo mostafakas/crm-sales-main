@@ -17,6 +17,7 @@ import {
   FileText,
   FileType,
 } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useProposalDraft } from "../proposal-draft-context";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
@@ -40,7 +41,6 @@ import {
   exportProposalAsDocx,
 } from "@/lib/proposal-export";
 import { ProposalDocumentFullscreen } from "./proposal-fullscreen";
-import { toast } from "sonner";
 
 export function ReviewStep() {
   const router = useRouter();
@@ -51,10 +51,16 @@ export function ReviewStep() {
   /* Persist the draft as saved proposal(s). A "both" draft produces two
    * records (English + Arabic). Reuses each variant's existing identity when
    * the draft was saved before, so re-saving/exporting updates the same rows
-   * instead of creating duplicates. */
+   * instead of creating duplicates.
+   *
+   * Returns whether every variant actually made it to Firestore. Callers
+   * must check this before clearing the draft or navigating away — saving
+   * can fail (network issue, permission error, bad data) and the caller
+   * needs to know so it doesn't throw the user's work away on a failure. */
   const saveProposal = React.useCallback(
-    async (sent: boolean) => {
+    async (sent: boolean): Promise<boolean> => {
       const usedCodes = records.map((p) => p.code);
+      let allSucceeded = true;
       for (const variant of variantsFor(draft.language)) {
         const existing = records.find(
           (p) => p.draft?.id === draft.id && p.variant === variant,
@@ -71,10 +77,15 @@ export function ReviewStep() {
           dispatch(upsertProposal(stored));
         } catch (error) {
           console.error("Failed to save proposal to Firebase:", error);
-          toast.error("Failed to save proposal.");
-          throw error;
+          allSucceeded = false;
         }
       }
+      if (!allSucceeded) {
+        toast.error(
+          "Failed to save the proposal. Your draft has not been cleared — please try again.",
+        );
+      }
+      return allSucceeded;
     },
     [dispatch, draft, records],
   );
@@ -101,14 +112,10 @@ export function ReviewStep() {
   }, [page, totalPages]);
 
   const handleSaveDraft = async () => {
-    try {
-      await saveProposal(false);
-      resetDraft();
-      toast.success("Draft saved successfully.");
-      router.push("/client-relations-management/proposals");
-    } catch (err) {
-      // toast is already shown inside saveProposal
-    }
+    const saved = await saveProposal(false);
+    if (!saved) return;
+    resetDraft();
+    router.push("/client-relations-management/proposals");
   };
 
   const handleExport = async (format: "pdf" | "docx") => {
@@ -127,17 +134,17 @@ export function ReviewStep() {
         /* DOCX is built directly from the draft — no DOM capture. */
         await exportProposalAsDocx(draft, `${baseName}.docx`);
       }
-      /* A successfully exported proposal counts as "sent" (active). */
-      await saveProposal(true);
+      /* A successfully exported proposal counts as "sent" (active). The
+       * file has already downloaded at this point regardless of what
+       * happens next, so a save failure here gets its own toast (from
+       * saveProposal) rather than the generic export-failed alert below. */
+      const saved = await saveProposal(true);
+      if (!saved) return;
       resetDraft();
-      toast.success(`Proposal exported as ${format.toUpperCase()}.`);
       router.push("/client-relations-management/proposals");
     } catch (err) {
       console.error("Export failed:", err);
-      // Only show alert if it's an export error (save errors show their own toast)
-      if (err instanceof Error && err.message === "Document not ready.") {
-        alert(`Failed to export proposal as ${format.toUpperCase()}.`);
-      }
+      alert(`Failed to export proposal as ${format.toUpperCase()}.`);
     } finally {
       setExporting(null);
     }

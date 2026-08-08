@@ -1,7 +1,7 @@
 import { collection, doc, getDocs, setDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 import { db } from "./config";
+import { sanitizeForFirestore } from "./sanitize";
 import type { Client } from "@/lib/types/client";
-import { cleanUndefined } from "@/lib/utils";
 
 const CLIENTS_COLLECTION = "clients";
 
@@ -18,13 +18,18 @@ export async function getClients(): Promise<Client[]> {
 export async function saveClient(client: Omit<Client, "id"> & { id?: string }): Promise<Client> {
   const isNew = !client.id;
   const id = client.id || crypto.randomUUID();
+  /* On edit, always keep the original createdAt. The caller is expected to
+   * pass it through (see client-form-modal.tsx), but this guards against
+   * that value ever being an explicit `undefined` reaching Firestore
+   * (which used to make every single client edit fail). */
+  const createdAt = isNew ? new Date().toISOString() : client.createdAt ?? new Date().toISOString();
   const clientData = {
     ...client,
     id,
-    createdAt: isNew ? new Date().toISOString() : client.createdAt,
+    createdAt,
   };
-  const cleanData = cleanUndefined(clientData);
-  await setDoc(doc(db, CLIENTS_COLLECTION, id), cleanData);
+
+  await setDoc(doc(db, CLIENTS_COLLECTION, id), sanitizeForFirestore(clientData));
   return clientData as Client;
 }
 

@@ -15,11 +15,13 @@ export interface Client {
   contactName: string;
   contactTitle: string;
   firstContactDate: string; // ISO string
-  lastFollowUpDate: string; // ISO string
-  lastFeedback: string;
+  /** Not every client has been followed up with yet — optional. */
+  lastFollowUpDate?: string; // ISO string
+  lastFeedback?: string;
   projectDetails: string;
-  nextAction: string;
-  nextActionDate: string; // ISO string
+  nextAction?: string;
+  /** Not every client has a scheduled next action yet — optional. */
+  nextActionDate?: string; // ISO string
   email: string;
   source: ClientSource;
   projectValue: number;

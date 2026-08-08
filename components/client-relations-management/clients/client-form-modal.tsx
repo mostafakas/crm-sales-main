@@ -32,6 +32,9 @@ const clientSchema = z.object({
   projectValue: z.coerce.number().min(0, "Invalid value"),
   currency: z.string().min(1, "Currency is required"),
   projectDetails: z.string().min(1, "Project Details are required"),
+  /* A brand-new client hasn't been followed up with yet and may not have a
+   * next action scheduled — these can't be required or the form silently
+   * refuses to submit for every new lead. */
   lastFeedback: z.string().optional(),
   nextAction: z.string().optional(),
   firstContactDate: z.string().min(1, "Required"),
@@ -52,6 +55,10 @@ export function ClientFormModal({ open, onOpenChange, onSuccess, initialData }: 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const form = useForm<ClientFormValues>({
+    // NOTE: the `as any` here works around a type-only incompatibility
+    // between the installed zod v4 and @hookform/resolvers v5 typings
+    // (unrelated to this form's fields) — it does not affect runtime
+    // validation, which still runs the full clientSchema correctly.
     resolver: zodResolver(clientSchema) as any,
     defaultValues: {
       companyName: "",
@@ -112,11 +119,18 @@ export function ClientFormModal({ open, onOpenChange, onSuccess, initialData }: 
       setIsSubmitting(true);
       await saveClient({
         id: initialData?.id,
+        /* Preserve the original creation date on edit — without this the
+         * update always sent `createdAt: undefined`, which Firestore
+         * rejects outright, so every single edit used to fail. */
         createdAt: initialData?.createdAt,
         ...values,
-        firstContactDate: values.firstContactDate ? new Date(values.firstContactDate).toISOString() : new Date().toISOString(),
-        lastFollowUpDate: values.lastFollowUpDate ? new Date(values.lastFollowUpDate).toISOString() : undefined,
-        nextActionDate: values.nextActionDate ? new Date(values.nextActionDate).toISOString() : undefined,
+        firstContactDate: new Date(values.firstContactDate).toISOString(),
+        lastFollowUpDate: values.lastFollowUpDate
+          ? new Date(values.lastFollowUpDate).toISOString()
+          : undefined,
+        nextActionDate: values.nextActionDate
+          ? new Date(values.nextActionDate).toISOString()
+          : undefined,
       });
       toast.success(initialData ? "Client updated successfully!" : "Client added successfully!");
       onSuccess();
