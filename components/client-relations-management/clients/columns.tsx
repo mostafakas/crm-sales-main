@@ -135,14 +135,14 @@ export const getColumns = (
               onClick={() => onView(client)}
             >
               <Eye className="size-3.5" />
-              <span>فتح التفاصيل</span>
+              <span>View Details</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-xs font-bold cursor-pointer flex items-center gap-2 hover:bg-muted rounded-[8px]"
               onClick={() => onEdit(client)}
             >
               <Pencil className="size-3.5" />
-              <span>تعديل</span>
+              <span>Edit</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="my-1" />
             <DropdownMenuItem 
@@ -150,7 +150,7 @@ export const getColumns = (
               onClick={() => onDelete(client)}
             >
               <Trash className="size-3.5" />
-              <span>حذف</span>
+              <span>Delete</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
