@@ -12,7 +12,7 @@ export function createEmptyProposalDraft(): ProposalDraft {
     headline: "",
     shortDescription: "",
     about: {
-      enabled: false,
+      enabled: true,
       imageUrl: "",
       whoWeAre: "",
       ourMission: "",
@@ -126,7 +126,7 @@ export function createEmptyProposalDraft(): ProposalDraft {
       ],
     },
     serviceDetails: {
-      enabled: false,
+      enabled: true,
       serviceName: "",
       serviceIcon: "Artificial_Intelligence_icon.svg",
       imageUrl: "",
@@ -153,7 +153,7 @@ export function createEmptyProposalDraft(): ProposalDraft {
       moreDetails: "",
     },
     why: {
-      enabled: false,
+      enabled: true,
       whyChooseAlMaster: "",
       whyPerfectFit: [
         {
@@ -213,7 +213,7 @@ export function createEmptyProposalDraft(): ProposalDraft {
       ],
     },
     scope: {
-      enabled: false,
+      enabled: true,
       projectScope: "",
       includedInScope: "",
       excludedFromScope: "",
@@ -252,7 +252,7 @@ export function createEmptyProposalDraft(): ProposalDraft {
       estimatedTotalDuration: "",
     },
     quotation: {
-      enabled: false,
+      enabled: true,
       mode: "quotation",
       lineItems: [
         {
@@ -356,7 +356,7 @@ export function createEmptyProposalDraft(): ProposalDraft {
       notes: "",
     },
     support: {
-      enabled: false,
+      enabled: true,
       afterSaleBenefits: [
         {
           id: "ab-1",
@@ -407,7 +407,7 @@ export function createEmptyProposalDraft(): ProposalDraft {
       ],
     },
     whatWeNeed: {
-      enabled: false,
+      enabled: true,
       projectAssets: "",
       accessDetails: "",
       technicalReferences: "",
