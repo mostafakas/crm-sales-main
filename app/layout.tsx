@@ -38,10 +38,6 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${jannaRegular.variable} ${jannaBold.variable} h-full antialiased font-sans`}>
       <head>
-        <link
-          rel="stylesheet"
-          href="https://www.fontstatic.com/fonts/janna-lt/janna-lt.css"
-        />
       </head>
       <body className="min-h-full flex flex-col">
         <ReduxProvider>{children}</ReduxProvider>
