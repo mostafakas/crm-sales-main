@@ -15,7 +15,7 @@ export default function LoginPage() {
 
   // Focus effect for the glow
   useEffect(() => {
-    document.body.style.backgroundColor = isRevealed ? "#f8fafc" : "#020617";
+    document.body.style.backgroundColor = isRevealed ? "#f8fafc" : "#ffffff";
     return () => {
       document.body.style.backgroundColor = ""; // Reset on unmount
     };
@@ -36,12 +36,14 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center transition-colors duration-1000 ease-in-out relative overflow-hidden"
-      style={{
-        backgroundColor: isRevealed ? "#f8fafc" : "#020617", // Slate 50 to Slate 950
-      }}
+      className={`min-h-screen w-full flex items-center justify-center transition-all duration-1000 ease-in-out relative overflow-hidden ${
+        isRevealed ? "bg-slate-50" : "bg-white"
+      }`}
     >
-      <div className="absolute inset-0 w-full h-full flex items-center justify-center">
+      {/* Animated gradient background (subtle) */}
+      <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50/50 via-white to-white" />
+      
+      <div className="absolute inset-0 w-full h-full flex items-center justify-center z-10">
         {/* The interactive container */}
         <div
           className={`relative flex items-center justify-center transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] ${
@@ -62,8 +64,8 @@ export default function LoginPage() {
               <div
                 className={`absolute inset-0 rounded-full blur-[60px] transition-all duration-1000 ${
                   isRevealed
-                    ? "bg-[#0047ff]/20 w-[200%] h-[200%] -left-1/2 -top-1/2"
-                    : "bg-[#0047ff]/60 w-[150%] h-[150%] -left-1/4 -top-1/4 animate-pulse"
+                    ? "bg-[#0047ff]/5 w-[200%] h-[200%] -left-1/2 -top-1/2"
+                    : "bg-[#0047ff]/30 w-[150%] h-[150%] -left-1/4 -top-1/4 animate-pulse"
                 }`}
               />
               <Image
@@ -71,34 +73,19 @@ export default function LoginPage() {
                 alt="AlMaster Logo Mark"
                 width={120}
                 height={120}
-                className="relative z-10 object-contain drop-shadow-2xl"
+                className="relative z-10 object-contain drop-shadow-xl"
                 priority
               />
             </div>
-
+            
             {/* The Full Text appearing beneath */}
             <div
               className={`overflow-hidden transition-all duration-1000 ease-in-out flex justify-center mt-6 ${
                 isRevealed ? "opacity-100 max-h-[80px]" : "opacity-0 max-h-0"
               }`}
             >
-              <Image
-                src="/images/logo-full.png"
-                alt="AlMaster"
-                width={200}
-                height={60}
-                className="object-contain"
-              />
+              <h1 className="text-3xl font-black text-[#0047ff] tracking-tight drop-shadow-sm">AlMASTER</h1>
             </div>
-
-            {/* Hint text when not revealed */}
-            <p
-              className={`absolute -bottom-16 text-[#0047ff] font-medium tracking-widest text-sm uppercase transition-opacity duration-700 ${
-                isRevealed ? "opacity-0" : "opacity-70 animate-bounce"
-              }`}
-            >
-              Click to Unlock
-            </p>
           </div>
 
           {/* Login Form Section */}
