@@ -3,10 +3,11 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Clock, Home, FileText, Plus, Users } from "lucide-react";
+import { Clock, Home, FileText, Plus, Users, LogOut } from "lucide-react";
 import { LiveClock } from "@/components/shared/live-clock";
 import { SystemSwitcher } from "@/components/shared/system-switcher";
 import { cn } from "@/lib/utils";
+import { useAutoLogout } from "@/hooks/use-auto-logout";
 
 interface ClientRelationsHeaderProps {
   onNewProposal?: () => void;
@@ -32,6 +33,13 @@ export function ClientRelationsHeader({ onNewProposal }: ClientRelationsHeaderPr
   const pathname = usePathname();
   const router = useRouter();
   const handleNew = onNewProposal ?? (() => router.push("/client-relations-management/proposals/new"));
+  
+  useAutoLogout();
+
+  const handleLogout = () => {
+    document.cookie = "almaster-auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    router.push("/login");
+  };
 
   return (
     <header className="h-16 shrink-0 bg-background flex items-center justify-between sticky top-0 z-10 px-6 border-b border-border gap-3">
@@ -87,6 +95,15 @@ export function ClientRelationsHeader({ onNewProposal }: ClientRelationsHeaderPr
             <Clock className="size-3.5 text-primary" strokeWidth={2.2} />
             <LiveClock className="text-sm font-bold text-primary leading-none tabular-nums whitespace-nowrap" />
           </div>
+        </PillWrapper>
+        <PillWrapper>
+          <button
+            onClick={handleLogout}
+            title="Log Out"
+            className="size-10 bg-destructive/10 text-destructive flex items-center justify-center rounded-[8px] hover:bg-destructive hover:text-white transition-all outline-none"
+          >
+            <LogOut className="size-3.5" strokeWidth={2.4} />
+          </button>
         </PillWrapper>
       </div>
     </header>
