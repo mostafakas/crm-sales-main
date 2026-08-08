@@ -65,12 +65,12 @@ export function ClientDataTable<TData, TValue>({
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-auto">
         <Table>
-          <TableHeader className="bg-muted sticky top-0 z-10">
+          <TableHeader className="bg-primary/5 sticky top-0 z-10 backdrop-blur-sm">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-muted border-border">
+              <TableRow key={headerGroup.id} className="border-border/50 hover:bg-transparent">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="text-xs font-bold text-muted-foreground h-10">
+                    <TableHead key={header.id} className="text-xs font-bold text-primary/80 h-11 tracking-wide">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -97,7 +97,7 @@ export function ClientDataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="border-border/50 hover:bg-muted/30 transition-colors"
+                  className="border-border/40 hover:bg-primary/5 transition-colors even:bg-muted/20"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-3">

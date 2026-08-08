@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, ArrowUpDown } from "lucide-react";
+import { MoreHorizontal, ArrowUpDown, Eye, Pencil, Trash } from "lucide-react";
 import type { Client } from "@/lib/types/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { deleteClient } from "@/lib/firebase/clients";
 
 export const getColumns = (
+  onView: (client: Client) => void,
   onEdit: (client: Client) => void,
   onDelete: (client: Client) => void
 ): ColumnDef<Client>[] => [
@@ -81,6 +82,21 @@ export const getColumns = (
     },
   },
   {
+    accessorKey: "sector",
+    header: "Sector",
+    cell: ({ row }) => <div className="text-xs font-medium">{row.getValue("sector")}</div>,
+  },
+  {
+    accessorKey: "country",
+    header: "Country",
+    cell: ({ row }) => <div className="text-xs font-medium">{row.getValue("country")}</div>,
+  },
+  {
+    accessorKey: "source",
+    header: "Source",
+    cell: ({ row }) => <div className="text-xs font-medium">{row.getValue("source")}</div>,
+  },
+  {
     accessorKey: "projectValue",
     header: () => <div className="text-right">Project Value</div>,
     cell: ({ row }) => {
@@ -113,27 +129,28 @@ export const getColumns = (
             <span className="sr-only">Open menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-background border border-border shadow-md rounded-[12px]">
-            <DropdownMenuLabel className="text-xs font-bold">Actions</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="bg-background border border-border shadow-md rounded-[12px] min-w-[120px] font-janna p-1.5">
             <DropdownMenuItem
-              className="text-xs font-medium cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(client.email)}
+              className="text-xs font-bold cursor-pointer flex items-center gap-2 hover:bg-muted rounded-[8px]"
+              onClick={() => onView(client)}
             >
-              Copy Email
+              <Eye className="size-3.5" />
+              <span>فتح التفاصيل</span>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-xs font-medium cursor-pointer"
+              className="text-xs font-bold cursor-pointer flex items-center gap-2 hover:bg-muted rounded-[8px]"
               onClick={() => onEdit(client)}
             >
-              Edit client
+              <Pencil className="size-3.5" />
+              <span>تعديل</span>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="my-1" />
             <DropdownMenuItem 
-              className="text-xs font-bold text-destructive cursor-pointer hover:bg-destructive/10 hover:text-destructive"
+              className="text-xs font-bold text-destructive cursor-pointer flex items-center gap-2 hover:bg-destructive/10 hover:text-destructive rounded-[8px]"
               onClick={() => onDelete(client)}
             >
-              Delete client
+              <Trash className="size-3.5" />
+              <span>حذف</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

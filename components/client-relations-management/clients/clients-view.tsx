@@ -9,6 +9,7 @@ import { getClients, deleteClient } from "@/lib/firebase/clients";
 import type { Client } from "@/lib/types/client";
 import { ClientDataTable } from "./client-data-table";
 import { ClientFormModal } from "./client-form-modal";
+import { ClientViewModal } from "./client-view-modal";
 import { getColumns } from "./columns";
 import { toast } from "sonner";
 
@@ -25,7 +26,9 @@ export function ClientsView() {
   const [isLoading, setIsLoading] = React.useState(clients.length === 0);
   const [search, setSearch] = React.useState("");
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = React.useState(false);
   const [editingClient, setEditingClient] = React.useState<Client | null>(null);
+  const [viewingClient, setViewingClient] = React.useState<Client | null>(null);
 
   const fetchClients = React.useCallback(async () => {
     try {
@@ -74,7 +77,12 @@ export function ClientsView() {
     }
   };
 
-  const tableColumns = React.useMemo(() => getColumns(handleEdit, handleDelete), [handleEdit, handleDelete]);
+  const handleView = (client: Client) => {
+    setViewingClient(client);
+    setIsViewModalOpen(true);
+  };
+
+  const tableColumns = React.useMemo(() => getColumns(handleView, handleEdit, handleDelete), [handleView, handleEdit, handleDelete]);
 
   return (
     <div className="flex flex-col h-full bg-muted/20 w-full">
@@ -141,6 +149,15 @@ export function ClientsView() {
           setEditingClient(null);
           fetchClients();
         }}
+      />
+
+      <ClientViewModal
+        open={isViewModalOpen}
+        onOpenChange={(open) => {
+          setIsViewModalOpen(open);
+          if (!open) setViewingClient(null);
+        }}
+        client={viewingClient}
       />
     </div>
   );
