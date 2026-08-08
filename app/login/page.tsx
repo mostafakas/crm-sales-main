@@ -71,8 +71,8 @@ export default function LoginPage() {
               <Image
                 src="/images/logo-mark.png"
                 alt="AlMaster Logo Mark"
-                width={120}
-                height={120}
+                width={300}
+                height={300}
                 className="relative z-10 object-contain drop-shadow-xl"
                 priority
               />
