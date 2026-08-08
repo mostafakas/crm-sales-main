@@ -45,6 +45,8 @@ import { ScaledPage } from "@/components/client-relations-management/proposal-do
 import { ClientFormModal } from "@/components/client-relations-management/clients/client-form-modal";
 import { getClients } from "@/lib/firebase/clients";
 import type { Client } from "@/lib/types/client";
+import { useSelector } from "react-redux";
+import { selectProposals } from "@/lib/store/slices/proposals-slice";
 
 interface ServiceOption {
   key: ProposalService;
@@ -123,6 +125,8 @@ export function ConfigureStep() {
   const [clientSearch, setClientSearch] = React.useState("");
   const [addClientOpen, setAddClientOpen] = React.useState(false);
   const [firebaseClients, setFirebaseClients] = React.useState<Client[]>([]);
+  const [isCustomValidity, setIsCustomValidity] = React.useState(false);
+  const records = useSelector(selectProposals);
 
   const fetchClients = React.useCallback(async () => {
     try {
@@ -139,7 +143,7 @@ export function ConfigureStep() {
 
   const mapClientToDraft = (c: Client): ProposalDraftClient => ({
     id: c.id,
-    name: c.companyName,
+    name: c.contactName ? `${c.companyName} - ${c.contactName}` : c.companyName,
     email: c.email,
     /* No real per-client photo exists yet — leave it unset so the UI falls
      * back to initials instead of showing the same stock photo for every
@@ -170,7 +174,7 @@ export function ConfigureStep() {
   const canContinue = Boolean(
     draft.country &&
       draft.language &&
-      draft.service &&
+      draft.services && draft.services.length > 0 &&
       draft.dimensions &&
       draft.client &&
       draft.headline.trim(),
@@ -218,7 +222,7 @@ export function ConfigureStep() {
                           {meta.label}
                         </p>
                         <p className="font-bold text-[12px] leading-[16px] text-[#707070]">
-                          142 past proposals
+                          {records.filter(r => r.market === market).length} past proposals
                         </p>
                       </div>
                     </div>
@@ -263,13 +267,20 @@ export function ConfigureStep() {
           hint="Selecting a service auto-imports CMS content into the builder">
           <div className="grid grid-cols-3 gap-[12px]">
             {SERVICE_OPTIONS.map((s) => {
-              const selected = draft.service === s.key;
+              const selected = (draft.services || []).includes(s.key);
               const Icon = s.icon;
               return (
                 <SelectionCard
                   key={s.key}
                   selected={selected}
-                  onClick={() => updateDraft({ service: s.key })}>
+                  onClick={() => {
+                    const current = draft.services || [];
+                    if (selected) {
+                      updateDraft({ services: current.filter(x => x !== s.key) });
+                    } else {
+                      updateDraft({ services: [...current, s.key] });
+                    }
+                  }}>
                   <div className="flex gap-[12px] items-start">
                     <div
                       className={cn(
@@ -300,29 +311,48 @@ export function ConfigureStep() {
         <WizardFieldSection
           label="Validity (days)"
           hint={`Expires ${expiresAtLabel}`}>
-          <div className="grid grid-cols-7 gap-[12px]">
-            {VALIDITY_PILLS.map((p) => {
-              const selected =
-                p.value === 0
-                  ? draft.validityDays === 0
-                  : draft.validityDays === p.value;
-              return (
-                <SelectionCard
-                  key={p.value}
-                  selected={selected}
-                  onClick={() => updateDraft({ validityDays: p.value })}>
-                  <div className="h-[24px] flex items-center justify-center">
-                    <p
-                      className={cn(
-                        "font-bold text-[14px] leading-[20px] whitespace-nowrap",
-                        selected ? "text-[#0047ff]" : "text-[#343434]",
-                      )}>
-                      {p.label}
-                    </p>
-                  </div>
-                </SelectionCard>
-              );
-            })}
+          <div className="flex flex-col gap-[12px]">
+            <div className="grid grid-cols-7 gap-[12px]">
+              {VALIDITY_PILLS.map((p) => {
+                const selected =
+                  p.value === 0
+                    ? isCustomValidity
+                    : !isCustomValidity && draft.validityDays === p.value;
+                return (
+                  <SelectionCard
+                    key={p.value}
+                    selected={selected}
+                    onClick={() => {
+                      if (p.value === 0) {
+                        setIsCustomValidity(true);
+                      } else {
+                        setIsCustomValidity(false);
+                        updateDraft({ validityDays: p.value });
+                      }
+                    }}>
+                    <div className="h-[24px] flex items-center justify-center">
+                      <p
+                        className={cn(
+                          "font-bold text-[14px] leading-[20px] whitespace-nowrap",
+                          selected ? "text-[#0047ff]" : "text-[#343434]",
+                        )}>
+                        {p.label}
+                      </p>
+                    </div>
+                  </SelectionCard>
+                );
+              })}
+            </div>
+            {isCustomValidity && (
+              <input
+                type="number"
+                min="1"
+                value={draft.validityDays || ""}
+                onChange={(e) => updateDraft({ validityDays: parseInt(e.target.value) || 0 })}
+                placeholder="Enter number of days..."
+                className={FIELD_INPUT_CLASS}
+              />
+            )}
           </div>
         </WizardFieldSection>
 
@@ -360,6 +390,7 @@ export function ConfigureStep() {
                           client={draft.client?.name || "Client Name"}
                           date={coverDate}
                           validTill={coverValidTill}
+                          slogan={draft.slogan}
                           className="rounded-[8px]"
                         />
                       </div>
@@ -475,6 +506,17 @@ export function ConfigureStep() {
               arPlaceholder="سطر واحد يوضح سياق الملخص التنفيذي."
             />
           </WizardFieldSection>
+          <WizardFieldSection label="Slogan">
+            <BilingualTextField
+              language={draft.language}
+              value={draft.slogan ?? "الشغل الزين .. يبيله ماستر"}
+              onChange={(v) => updateDraft({ slogan: v })}
+              arValue={draft.arOverrides?.["slogan"] ?? ""}
+              onArChange={(v) => setArOverride("slogan", v)}
+              placeholder="Ex. الشغل الزين .. يبيله ماستر"
+              arPlaceholder="مثال. الشغل الزين .. يبيله ماستر"
+            />
+          </WizardFieldSection>
         </div>
 
         {/* Live Preview */}
@@ -496,6 +538,7 @@ export function ConfigureStep() {
                 client={draft.client?.name || "Client Name"}
                 date={coverDate}
                 validTill={coverValidTill}
+                slogan={draft.slogan}
                 className="rounded-[16px]"
               />
             </div>
@@ -563,6 +606,7 @@ function CoverThumb({
   client,
   date,
   validTill,
+  slogan,
   className,
 }: {
   dimension: ProposalDimensions;
@@ -571,6 +615,7 @@ function CoverThumb({
   client: string;
   date: string;
   validTill: string;
+  slogan?: string;
   className?: string;
 }) {
   return (
@@ -584,6 +629,7 @@ function CoverThumb({
           client={client}
           date={date}
           validTill={validTill}
+          slogan={slogan}
         />
       </div>
     </ScaledPage>

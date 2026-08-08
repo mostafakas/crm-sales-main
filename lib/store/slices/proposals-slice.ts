@@ -214,7 +214,8 @@ export function isStepComplete(
       return Boolean(
         draft.country &&
           draft.language &&
-          draft.service &&
+          draft.services &&
+          draft.services.length > 0 &&
           draft.dimensions &&
           draft.client &&
           draft.headline.trim(),

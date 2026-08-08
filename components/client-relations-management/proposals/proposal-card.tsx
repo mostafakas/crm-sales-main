@@ -35,7 +35,7 @@ export function ProposalCard({
   className,
 }: ProposalCardProps) {
   const formatMeta = PROPOSAL_FORMAT_META[proposal.format];
-  const serviceMeta = PROPOSAL_SERVICE_META[proposal.service];
+  const serviceMeta = PROPOSAL_SERVICE_META[proposal.services?.[0] ?? "programming"];
 
   return (
     <div

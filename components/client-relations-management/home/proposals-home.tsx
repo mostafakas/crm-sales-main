@@ -80,7 +80,7 @@ export function ProposalsHome() {
 
       if (filters.markets?.length && !filters.markets.includes(p.market))
         return false;
-      if (filters.services?.length && !filters.services.includes(p.service))
+      if (filters.services?.length && (!p.services || !p.services.some(s => filters.services!.includes(s))))
         return false;
       if (filters.languages?.length && !filters.languages.includes(p.language))
         return false;
@@ -93,7 +93,7 @@ export function ProposalsHome() {
           p.headline.toLowerCase().includes(q) ||
           p.code.toLowerCase().includes(q) ||
           p.client.name.toLowerCase().includes(q) ||
-          PROPOSAL_SERVICE_META[p.service].label.toLowerCase().includes(q);
+          (p.services || []).some(s => PROPOSAL_SERVICE_META[s]?.label.toLowerCase().includes(q));
         if (!matches) return false;
       }
       return true;

@@ -35,7 +35,7 @@ export function ImportProposalModal({
       id: code.toLowerCase(),
       code,
       headline: file.name,
-      service: "content-writing",
+      services: ["content-writing"],
       client: { id: `client-${Date.now()}`, name: "Untitled Client" },
       market: "saudi",
       language: "english",

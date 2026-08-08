@@ -63,7 +63,7 @@ export function LatestProposalsTable({
         bodyGap={54}
         align="center">
         {proposals.map((p) => (
-          <ProposalServiceBadge key={p.id} service={p.service} />
+          <ProposalServiceBadge key={p.id} service={p.services?.[0] ?? "programming"} />
         ))}
       </Column>
 

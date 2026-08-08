@@ -364,7 +364,9 @@ export function CoverPage({
   client,
   date,
   validTill,
+  market,
   aspect = "1240 / 698",
+  slogan = "الشغل الزين .. يبيله ماستر",
   landscape,
 }: {
   headline: string;
@@ -374,6 +376,7 @@ export function CoverPage({
   validTill: string;
   market?: string;
   aspect?: string;
+  slogan?: string;
   landscape: boolean;
 }) {
   const pad = landscape ? 64 : 56;
@@ -402,7 +405,7 @@ export function CoverPage({
           dir="rtl"
           className="font-bold text-white/95"
           style={{ fontSize: landscape ? 16 : 18 }}>
-          الشغل الزين .. يبيله ماستر
+          {slogan}
         </div>
         <h1
           className="font-bold leading-[1.04]"
@@ -426,13 +429,13 @@ export function CoverPage({
           <CoverChip icon={Hourglass} label={`Valid Till: ${validTill}`} />
         </div>
       </div>
-      <HeroFooter pad={pad} landscape={landscape} />
+      <HeroFooter pad={pad} landscape={landscape} slogan={slogan} />
     </div>
   );
 }
 
 /** Footer strip shown on the cover & thank-you hero sheets. */
-function HeroFooter({ pad, landscape }: { pad: number; landscape: boolean }) {
+function HeroFooter({ pad, landscape, slogan = "الشغل الزين .. يبيله ماستر" }: { pad: number; landscape: boolean; slogan?: string; }) {
   return (
     <div
       className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4"
@@ -451,7 +454,7 @@ function HeroFooter({ pad, landscape }: { pad: number; landscape: boolean }) {
         dir="rtl"
         className="text-white/65 font-bold whitespace-nowrap shrink-0"
         style={{ fontSize: landscape ? 11 : 12 }}>
-        الشغل الزين .. يبيله ماستر
+        {slogan}
       </div>
     </div>
   );
@@ -553,11 +556,14 @@ function ContactPanel() {
 }
 
 export function ThankYouPage({
+  draft,
   aspect = "1240 / 698",
+  slogan = "الشغل الزين .. يبيله ماستر",
   landscape,
 }: {
   draft?: ProposalDraft;
   aspect?: string;
+  slogan?: string;
   landscape: boolean;
 }) {
   const pad = landscape ? 64 : 56;
@@ -585,7 +591,7 @@ export function ThankYouPage({
           <div className="flex flex-col gap-4 max-w-[46%]">
             <BrandLockup size={landscape ? 22 : 24} />
             <div dir="rtl" className="text-[16px] font-bold text-white/95">
-              الشغل الزين .. يبيله ماستر
+              {slogan}
             </div>
             <h1 className="text-[68px] font-bold leading-none">Thank You!</h1>
             <p className="text-[15px] text-white/85 leading-snug">
@@ -603,7 +609,7 @@ export function ThankYouPage({
           <div className="flex flex-col gap-4">
             <BrandLockup size={24} />
             <div dir="rtl" className="text-[18px] font-bold text-white/95">
-              الشغل الزين .. يبيله ماستر
+              {slogan}
             </div>
             <h1 className="text-[64px] font-bold leading-none">Thank You!</h1>
             <p className="text-[16px] text-white/85 leading-snug max-w-[80%]">
@@ -613,7 +619,7 @@ export function ThankYouPage({
           <ContactPanel />
         </div>
       )}
-      <HeroFooter pad={pad} landscape={landscape} />
+      <HeroFooter pad={pad} landscape={landscape} slogan={slogan} />
     </div>
   );
 }
@@ -642,9 +648,11 @@ function AboutCard({
 function AboutHero({
   imageUrl,
   className,
+  slogan = "الشغل الزين .. يبيله ماستر",
 }: {
   imageUrl?: string;
   className?: string;
+  slogan?: string;
 }) {
   return (
     <div className={cn("relative overflow-hidden rounded-[16px]", className)}>
@@ -658,7 +666,7 @@ function AboutHero({
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 text-white">
         <BrandLockup size={22} />
         <div dir="rtl" className="text-[16px] font-bold drop-shadow">
-          الشغل الزين .. يبيله ماستر
+          {slogan}
         </div>
       </div>
     </div>
@@ -1880,7 +1888,7 @@ export function buildProposalSections(
   /* 1 — Cover (hero) */
   sections.push({
     id: "cover",
-    hero: <CoverPage {...cover} landscape={landscape} />,
+    hero: <CoverPage {...cover} slogan={draft.slogan} landscape={landscape} />,
   });
 
   /* 2 — Table of Contents */
@@ -2008,7 +2016,7 @@ export function buildProposalSections(
                     size={bodySize}
                   />
                 </div>
-                <AboutHero imageUrl={a.imageUrl} />
+                <AboutHero imageUrl={a.imageUrl} slogan={draft.slogan} />
               </div>
             ),
           },
@@ -2021,7 +2029,7 @@ export function buildProposalSections(
         blocks: [
           {
             key: "hero",
-            node: <AboutHero imageUrl={a.imageUrl} className="h-[280px]" />,
+            node: <AboutHero imageUrl={a.imageUrl} slogan={draft.slogan} className="h-[280px]" />,
           },
           {
             key: "who",
@@ -2525,11 +2533,11 @@ export function buildProposalSections(
     });
   }
 
-  /* 14 — Thank You (hero) */
+  /* 8 — Thank You (hero) */
   sections.push({
     id: "thankyou",
     hero: (
-      <ThankYouPage draft={draft} aspect={cover.aspect} landscape={landscape} />
+      <ThankYouPage draft={draft} aspect={cover.aspect} slogan={draft.slogan} landscape={landscape} />
     ),
   });
 

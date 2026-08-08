@@ -103,7 +103,7 @@ export function createStoredProposalFromDraft(
     code: existing?.code ?? generateProposalCode(existingCodes),
     headline: draft.headline.trim() || "Untitled Proposal",
     subtitle: draft.shortDescription.trim() || undefined,
-    service: draft.service ?? "programming",
+    services: draft.services ?? ["programming"],
     client: clientFromDraft(draft),
     market: marketFromDraft(draft),
     language: lang,

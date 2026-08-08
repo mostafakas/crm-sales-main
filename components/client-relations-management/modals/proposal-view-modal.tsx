@@ -150,7 +150,7 @@ export function ProposalViewModal({
               <MetaRow label="ID:" value={proposal.code} />
               <MetaRow
                 label="Service:"
-                value={<ProposalServiceBadge service={proposal.service} />}
+                value={<ProposalServiceBadge service={proposal.services?.[0] ?? "programming"} />}
               />
               <MetaRow
                 label="Client:"

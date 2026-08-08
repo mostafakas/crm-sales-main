@@ -215,12 +215,13 @@ export interface ProposalDraft {
   /* ─── Step 01: Configure ──────────────────────────────────────── */
   country?: ProposalMarket;
   language?: ProposalLanguage;
-  service?: ProposalService;
+  services?: ProposalService[];
   validityDays: number;
   expiresAt?: string; // ISO date
   dimensions?: ProposalDimensions;
   client?: ProposalDraftClient;
   headline: string;
+  slogan?: string;
   shortDescription: string;
   /* ─── Step 02: Modules ────────────────────────────────────────── */
   about: AboutModuleDraft;

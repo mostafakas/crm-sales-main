@@ -83,7 +83,11 @@ export function TopServicesCard({ proposals }: TopServicesCardProps) {
   const rows = React.useMemo<ServiceRow[]>(() => {
     const counts: Record<string, number> = {};
     for (const p of proposals) {
-      counts[p.service] = (counts[p.service] ?? 0) + 1;
+      if (p.services) {
+        for (const s of p.services) {
+          counts[s] = (counts[s] ?? 0) + 1;
+        }
+      }
     }
     const total = proposals.length || 1;
     return Object.entries(counts)

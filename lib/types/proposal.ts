@@ -99,7 +99,7 @@ export interface ProposalRecord {
   code: string;
   /** File-style headline shown in the table. */
   headline: string;
-  service: ProposalService;
+  services: ProposalService[];
   client: ProposalClient;
   market: ProposalMarket;
   language: ProposalLanguage;
