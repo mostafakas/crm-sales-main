@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Clock, Home, FileText, Plus, Users, LogOut } from "lucide-react";
+import { Clock, Home, FileText, Plus, Users, LogOut, Bell } from "lucide-react";
 import { LiveClock } from "@/components/shared/live-clock";
 import { SystemSwitcher } from "@/components/shared/system-switcher";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,7 @@ const subNav = [
   { label: "Home", href: "/client-relations-management", icon: Home, exact: true },
   { label: "Clients", href: "/client-relations-management/clients", icon: Users },
   { label: "Proposals", href: "/client-relations-management/proposals", icon: FileText },
+  { label: "Notifications", href: "/client-relations-management/notifications", icon: Bell },
 ];
 
 /**
