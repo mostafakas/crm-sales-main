@@ -35,6 +35,34 @@ export function ClientRelationsHeader({ onNewProposal }: ClientRelationsHeaderPr
   const router = useRouter();
   const handleNew = onNewProposal ?? (() => router.push("/client-relations-management/proposals/new"));
   
+  const [notificationCount, setNotificationCount] = React.useState(0);
+
+  React.useEffect(() => {
+    const updateCount = () => {
+      try {
+        const cached = window.localStorage.getItem("almaster:crm:clients");
+        if (cached) {
+          const clients = JSON.parse(cached);
+          const todayStr = new Date().toISOString().split("T")[0];
+          const count = clients.filter((c: any) => {
+            if (!c.nextActionDate) return false;
+            return c.nextActionDate.split("T")[0] === todayStr;
+          }).length;
+          setNotificationCount(count);
+        }
+      } catch (e) {}
+    };
+
+    updateCount();
+    const interval = setInterval(updateCount, 2000);
+    window.addEventListener("storage", updateCount);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("storage", updateCount);
+    };
+  }, []);
+
   useAutoLogout();
 
   const handleLogout = () => {
@@ -62,7 +90,7 @@ export function ClientRelationsHeader({ onNewProposal }: ClientRelationsHeaderPr
                 <Link key={item.href} href={item.href}>
                   <div
                     className={cn(
-                      "h-10 flex items-center gap-3 px-3 rounded-[8px] transition-all outline-none cursor-pointer",
+                      "h-10 flex items-center gap-3 px-3 rounded-[8px] transition-all outline-none cursor-pointer relative",
                       isActive
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                         : "bg-secondary text-foreground hover:bg-secondary/80",
@@ -71,6 +99,11 @@ export function ClientRelationsHeader({ onNewProposal }: ClientRelationsHeaderPr
                     <span className="text-sm font-bold leading-none">
                       {item.label}
                     </span>
+                    {item.label === "Notifications" && notificationCount > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 bg-blue-600 text-white text-[10px] font-bold size-5 flex items-center justify-center rounded-full border-2 border-background shadow-sm">
+                        {notificationCount}
+                      </span>
+                    )}
                   </div>
                 </Link>
               );
